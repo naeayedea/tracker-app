@@ -5,7 +5,7 @@ import { useTracker } from '@/contexts/TrackerContext';
 import { Tracker } from '@/types/tracker';
 import TrackerInput from '@/components/TrackerInput';
 import TrackerKey from '@/components/TrackerKey';
-import {ChevronLeft, ChevronRight} from "lucide-react";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TrackerCalendarProps {
     tracker: Tracker;
@@ -54,10 +54,9 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 );
             }
 
-            //pad to the day
             for (let pad = 0; pad < dayPadLookup[firstDayOfMonth]; pad++) {
                 monthDays.push(
-                    <div key={`${year}-${month}-pad-${pad}`} className={"w-12 h-12 lg:w-16 lg:h-16 flex items-center justify-center cursor-pointer relative"} />
+                    <div key={`${year}-${month}-pad-${pad}`} className={"w-12 h-12 lg:w-16 lg:h-16 flex items-center justify-center relative"} />
                 )
             }
 
@@ -106,7 +105,6 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
         setYearInput("" + year)
     };
 
-
     return (
         <div className={"flex flex-col"}>
             <div className="flex justify-between items-center mb-4">
@@ -130,11 +128,6 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 </button>
             </div>
 
-            {/*<div>*/}
-            {/*    <h1 className={"text-2xl font-bold flex justify-center"}>{year}</h1>*/}
-            {/*</div>*/}
-
-
             {showKey && <TrackerKey tracker={tracker}/>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {renderCalendar()}
@@ -143,6 +136,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 <TrackerInput
                     tracker={tracker}
                     date={selectedDate}
+                    currentValue={tracker.data[year][selectedDate.toISOString().split('T')[0]] || ''}
                     onClose={() => setSelectedDate(null)}
                     onSave={(value) => {
                         setTrackerValue(tracker.id, year, selectedDate.toISOString().split('T')[0], value);
@@ -150,6 +144,20 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                     }}
                 />
             )}
+            <div className="flex items-center space-x-4 self-center mt-4">
+                <button onClick={() => handleYearChange(year - 1)} className="p-2 rounded-full bg-gray-200">
+                    <ChevronLeft size={24}/>
+                </button>
+                <input
+                    type="number"
+                    value={yearInput}
+                    onChange={(e) => setYearInput(e.target.value)}
+                    className="w-20 text-center border rounded p-2"
+                />
+                <button onClick={() => handleYearChange(year + 1)} className="p-2 rounded-full bg-gray-200">
+                    <ChevronRight size={24}/>
+                </button>
+            </div>
         </div>
     );
 };
