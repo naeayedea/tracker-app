@@ -18,5 +18,6 @@ export interface TrackerContextType {
     updateTracker: (tracker: Tracker) => void;
     deleteTracker: (id: string) => void;
     setTrackerValue: (trackerId: string, year:number, date: string, value: string) => void;
+    switchYear: (tracker: Tracker, year: number) => void;
 }
 

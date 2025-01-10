@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useTracker } from '@/contexts/TrackerContext';
 import { Tracker } from '@/types/tracker';
 import TrackerInput from '@/components/TrackerInput';
 import TrackerKey from '@/components/TrackerKey';
+import {ChevronLeft, ChevronRight} from "lucide-react";
 
 interface TrackerCalendarProps {
     tracker: Tracker;
@@ -14,11 +15,20 @@ const dayPadLookup: Record<number, number> = {0: 6, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4
 const daysOfTheWeek = ["Mon", "Tue", "Wed","Thu", "Fri", "Sat", "Sun"]
 
 const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
+    const year = tracker.currentDate
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [yearInput, setYearInput] = useState<string>("" + year)
     const [showKey, setShowKey] = useState(false);
     const [hoveredDate, setHoveredDate] = useState<string | null>(null);
-    const { setTrackerValue } = useTracker();
-    const year = tracker.currentDate
+    const { setTrackerValue, switchYear } = useTracker();
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            handleYearChange(parseInt(yearInput))
+        }, 500)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [yearInput])
 
     const renderCalendar = () => {
         const calendar = [];
@@ -91,19 +101,41 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
         return calendar;
     };
 
+    const handleYearChange = (year: number) => {
+        switchYear(tracker, year)
+        setYearInput("" + year)
+    };
+
+
     return (
-        <div>
+        <div className={"flex flex-col"}>
             <div className="flex justify-between items-center mb-4">
                 <button onClick={() => setShowKey(!showKey)} className="bg-blue-500 text-white px-4 py-2 rounded">
                     {showKey ? 'Hide Key' : 'Show Key'}
                 </button>
             </div>
 
-            <div>
-                <h1 className={"text-2xl font-bold flex justify-center"}>{year}</h1>
+            <div className="flex items-center space-x-4 self-center ">
+                <button onClick={() => handleYearChange(year - 1)} className="p-2 rounded-full bg-gray-200">
+                    <ChevronLeft size={24}/>
+                </button>
+                <input
+                    type="number"
+                    value={yearInput}
+                    onChange={(e) => setYearInput(e.target.value)}
+                    className="w-20 text-center border rounded p-2"
+                />
+                <button onClick={() => handleYearChange(year + 1)} className="p-2 rounded-full bg-gray-200">
+                    <ChevronRight size={24}/>
+                </button>
             </div>
 
-            {showKey && <TrackerKey tracker={tracker} />}
+            {/*<div>*/}
+            {/*    <h1 className={"text-2xl font-bold flex justify-center"}>{year}</h1>*/}
+            {/*</div>*/}
+
+
+            {showKey && <TrackerKey tracker={tracker}/>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {renderCalendar()}
             </div>

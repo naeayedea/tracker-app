@@ -29,6 +29,21 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         ))
     }
 
+    const switchYear = (trackerToSwitch: Tracker, year: number) => {
+        setTrackers(trackers.map(tracker => {
+            if (tracker.id !== trackerToSwitch.id)
+                return tracker
+
+            const switchedTracker: Tracker = {...trackerToSwitch, currentDate: year}
+
+            //ensure that the year exists
+
+            switchedTracker.data[year] = switchedTracker.data[year] !== undefined ? switchedTracker.data[year] : {}
+
+            return switchedTracker
+        }))
+    }
+
     const deleteTracker = (id: string) => {
         setTrackers(trackers.filter(tracker => tracker.id !== id))
     }
@@ -47,7 +62,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
 
     return (
-        <TrackerContext.Provider value={{ trackers, addTracker, updateTracker, deleteTracker, setTrackerValue }}>
+        <TrackerContext.Provider value={{ trackers, addTracker, updateTracker, deleteTracker, setTrackerValue, switchYear }}>
             {children}
         </TrackerContext.Provider>
     )
