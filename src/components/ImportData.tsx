@@ -3,16 +3,20 @@
 import React, { useState } from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker } from '@/types/tracker'
+import ConfirmImportDialog from './ConfirmImportDialog'
 
 const ImportData: React.FC = () => {
     const { importTrackers } = useTracker()
     const [file, setFile] = useState<File | null>(null)
+    const [importData, setImportData] = useState<Tracker[] | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setFile(e.target.files[0])
             setError(null)
+            setImportData(null)
         }
     }
 
@@ -24,19 +28,28 @@ const ImportData: React.FC = () => {
 
         try {
             const content = await file.text()
-            const importedData = JSON.parse(content) as Tracker[]
-            importTrackers(importedData)
-            setFile(null)
-            setError(null)
-            alert('Data imported successfully!')
+            const parsedData = JSON.parse(content) as Tracker[]
+            setImportData(parsedData)
+            setIsConfirmDialogOpen(true)
         } catch (err) {
-            setError('Error importing data. Please make sure the file is valid JSON.')
+            setError('Error parsing data. Please make sure the file is valid JSON.')
             console.error(err)
         }
     }
 
+    const confirmImport = () => {
+        if (importData) {
+            importTrackers(importData)
+            setFile(null)
+            setImportData(null)
+            setError(null)
+            setIsConfirmDialogOpen(false)
+            alert('Data imported successfully!')
+        }
+    }
+
     return (
-        <div className="bg-white shadow-lg rounded-xl p-8 mb-8">
+        <div className="bg-white shadow-lg rounded-xl p-8 mb-8 max-w-2xl mx-auto">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Import Data</h2>
             <div className="mb-4">
                 <input
@@ -56,9 +69,16 @@ const ImportData: React.FC = () => {
                 disabled={!file}
                 className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-                Import Data
+                Preview Import
             </button>
             {error && <p className="mt-4 text-red-500">{error}</p>}
+
+            <ConfirmImportDialog
+                isOpen={isConfirmDialogOpen}
+                onClose={() => setIsConfirmDialogOpen(false)}
+                onConfirm={confirmImport}
+                importData={importData}
+            />
         </div>
     )
 }
