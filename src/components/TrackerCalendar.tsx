@@ -47,7 +47,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 dayIndicator.push(
                     <div
                         key={`${year}-${month}-day-string-${dayString}`}
-                        className="w-12 h-12 lg:w-12 lg:h-16 flex items-center justify-center cursor-pointer relative"
+                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative"
                     >
                         {dayString}
                     </div>
@@ -56,7 +56,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
 
             for (let pad = 0; pad < dayPadLookup[firstDayOfMonth]; pad++) {
                 monthDays.push(
-                    <div key={`${year}-${month}-pad-${pad}`} className={"w-12 h-12 lg:w-16 lg:h-16 flex items-center justify-center relative"} />
+                    <div key={`${year}-${month}-pad-${pad}`} className={"w-12 h-12 flex items-center justify-center relative"} />
                 )
             }
 
@@ -71,7 +71,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 monthDays.push(
                     <div
                         key={`${year}-${month}-${day}`}
-                        className="w-12 h-12 lg:w-16 lg:h-16 flex items-center justify-center cursor-pointer relative"
+                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative"
                         style={{ backgroundColor, color: textColor }}
                         onClick={() => setSelectedDate(date)}
                         onMouseEnter={() => setHoveredDate(dateString)}

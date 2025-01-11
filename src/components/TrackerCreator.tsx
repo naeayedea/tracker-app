@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, KeyboardEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker, TrackerOption } from '@/types/tracker'
-import { hashStringToColor, getContrastColor } from '@/utils/colorUtils'
+import { hashStringToColor, getContrastColor, isColorValid } from '@/utils/colorUtils'
+import { X, Plus } from 'lucide-react'
 
 const TrackerCreator: React.FC = () => {
     const { addTracker } = useTracker()
@@ -14,15 +15,18 @@ const TrackerCreator: React.FC = () => {
     const [optionLabel, setOptionLabel] = useState('')
     const [optionColor, setOptionColor] = useState('#000000')
     const [textColor, setTextColor] = useState('#ffffff')
-    const optionInputRef = useRef<HTMLInputElement>(null)
+    const [isColorManuallySelected, setIsColorManuallySelected] = useState(false)
 
     useEffect(() => {
-        if (optionLabel) {
-            const suggestedColor = hashStringToColor(optionLabel)
-            setOptionColor(suggestedColor)
-            setTextColor(getContrastColor(suggestedColor))
+        if (optionLabel && !isColorManuallySelected) {
+            let suggestedColor;
+            do {
+                suggestedColor = hashStringToColor(optionLabel + Math.random().toString());
+            } while (!isColorValid(suggestedColor));
+            setOptionColor(suggestedColor);
+            setTextColor(getContrastColor(suggestedColor));
         }
-    }, [optionLabel])
+    }, [optionLabel, isColorManuallySelected])
 
     const handleAddOption = () => {
         if (optionLabel) {
@@ -30,7 +34,7 @@ const TrackerCreator: React.FC = () => {
             setOptionLabel('')
             setOptionColor('#000000')
             setTextColor('#ffffff')
-            optionInputRef.current?.focus()
+            setIsColorManuallySelected(false)
         }
     }
 
@@ -42,14 +46,11 @@ const TrackerCreator: React.FC = () => {
                 id: Date.now().toString(),
                 name,
                 options,
-                data: {},
+                data: { [year]: {} },
                 currentDate: year
             }
 
-            newTracker.data[year] = {}
-
             addTracker(newTracker)
-
             router.push(`/tracker/${newTracker.id}`)
         }
     }
@@ -58,66 +59,104 @@ const TrackerCreator: React.FC = () => {
         setOptions(options.filter((_, i) => i !== index))
     }
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            e.preventDefault()
-            handleAddOption()
+            if (e.currentTarget.id === 'tracker-name' && name) {
+                document.getElementById('option-label')?.focus()
+            } else if (e.currentTarget.id === 'option-label') {
+                handleAddOption()
+            }
         }
     }
 
     return (
-        <div className="mb-4 p-4 border rounded-lg">
-            <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Tracker Name"
-                className="w-full p-2 mb-2 border rounded"
-            />
-            <div className="mb-2">
-                <input
-                    ref={optionInputRef}
-                    type="text"
-                    value={optionLabel}
-                    onChange={(e) => setOptionLabel(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Option Label"
-                    className="p-2 mr-2 border rounded"
-                />
-                <input
-                    type="color"
-                    value={optionColor}
-                    onChange={(e) => {
-                        setOptionColor(e.target.value)
-                        setTextColor(getContrastColor(e.target.value))
-                    }}
-                    className="mr-2"
-                />
-                <button onClick={handleAddOption} className="bg-blue-500 text-white px-2 py-1 rounded">
-                    Add Option
+        <div className="w-full max-w-full mx-auto px-4">
+            <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
+                <h2 className="text-2xl font-semibold mb-6 text-gray-800">Create New Tracker</h2>
+                <div className="mb-6">
+                    <label htmlFor="tracker-name" className="block text-sm font-medium text-gray-700 mb-2">
+                        Tracker Name
+                    </label>
+                    <input
+                        id="tracker-name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        onKeyUp={handleKeyPress}
+                        placeholder="Enter tracker name"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                </div>
+                <div className="mb-6">
+                    <label htmlFor="option-label" className="block text-sm font-medium text-gray-700 mb-2">
+                        Add Option
+                    </label>
+                    <div className="flex space-x-2">
+                        <input
+                            id="option-label"
+                            type="text"
+                            value={optionLabel}
+                            onChange={(e) => setOptionLabel(e.target.value)}
+                            onKeyUp={handleKeyPress}
+                            placeholder="Option Label"
+                            className="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <div className={"w-12 h-12 rounded-lg overflow-hidden"}>
+                            <input
+                                type="color"
+                                value={optionColor}
+                                onChange={(e) => {
+                                    const newColor = e.target.value;
+                                    setOptionColor(newColor);
+                                    setTextColor(getContrastColor(newColor));
+                                    setIsColorManuallySelected(true);
+                                }}
+                                className="w-24 h-24 cursor-pointer overflow-hidden -translate-x-1/4 -translate-y-1/4"
+                                style={{
+                                    appearance: 'none',
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: 0,
+                                }}
+                            />
+                        </div>
+
+                        <button
+                            onClick={handleAddOption}
+                            className="bg-blue-500 text-white px-5 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            <Plus size={24}/>
+                        </button>
+                    </div>
+                </div>
+                <div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-700">Options</h3>
+                    <div className="flex flex-wrap gap-3">
+                        {options.map((option, index) => (
+                            <span
+                                key={index}
+                                className="inline-flex items-center px-4 py-2 rounded-full text-base"
+                                style={{backgroundColor: option.color, color: option.textColor }}
+                            >
+                                {option.label}
+                                <button
+                                    onClick={() => handleRemoveOption(index)}
+                                    className="ml-2 focus:outline-none"
+                                >
+                                    <X size={18} />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+                <button
+                    onClick={handleCreateTracker}
+                    disabled={!name || options.length === 0}
+                    className="w-full bg-green-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                    Create Tracker
                 </button>
             </div>
-            <div className="mb-2">
-                {options.map((option, index) => (
-                    <span
-                        key={index}
-                        className="mr-2 p-1 rounded flex items-center"
-                        style={{ backgroundColor: option.color, color: option.textColor }}
-                    >
-            {option.label}
-                        <button
-                            onClick={() => handleRemoveOption(index)}
-                            className="ml-2 font-bold"
-                            style={{ color: option.textColor }}
-                        >
-              ×
-            </button>
-          </span>
-                ))}
-            </div>
-            <button onClick={handleCreateTracker} className="bg-green-500 text-white px-4 py-2 rounded">
-                Create Tracker
-            </button>
         </div>
     )
 }
