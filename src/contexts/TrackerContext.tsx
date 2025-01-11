@@ -73,6 +73,43 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }
 
+    const importTrackers = (importedTrackers: Tracker[]) => {
+        setTrackers(prevTrackers => {
+            let mergedTrackers: Tracker[];
+
+            if (prevTrackers !== undefined) {
+                mergedTrackers = [...prevTrackers]
+            } else {
+                mergedTrackers = []
+            }
+
+            importedTrackers.forEach(importedTracker => {
+                const existingTrackerIndex = mergedTrackers.findIndex(t => t.id === importedTracker.id)
+                if (existingTrackerIndex !== -1) {
+                    // Merge data for existing tracker
+                    const existingTracker = mergedTrackers[existingTrackerIndex]
+                    const mergedData = { ...existingTracker.data }
+                    Object.keys(importedTracker.data).map((year: string) => parseInt(year)).forEach((year: number) => {
+                        mergedData[year] = {
+                            ...(mergedData[year] || {}),
+                            ...importedTracker.data[year]
+                        }
+                    })
+                    mergedTrackers[existingTrackerIndex] = {
+                        ...existingTracker,
+                        options: [...new Set([...existingTracker.options, ...importedTracker.options])],
+                        data: mergedData
+                    }
+                } else {
+                    // Add new tracker
+                    mergedTrackers.push(importedTracker)
+                }
+            })
+            return mergedTrackers
+        })
+    }
+
+
     return (
         <TrackerContext.Provider value={{
             trackers: trackers !== undefined ? trackers : [],
@@ -80,7 +117,8 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
             updateTracker,
             deleteTracker,
             setTrackerValue,
-            switchYear
+            switchYear,
+            importTrackers
         }}>
             {children}
         </TrackerContext.Provider>

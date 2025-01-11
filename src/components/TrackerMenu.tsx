@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import {useTracker} from '@/contexts/TrackerContext'
-import {Download, Menu, Plus} from 'lucide-react'
+import {Download, Menu, Plus, Upload} from 'lucide-react'
 
 interface TrackerMenuProps {
     isOpen: boolean;
@@ -49,6 +49,13 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({isOpen, setIsOpen}) => {
                                   className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/export' ? 'bg-gray-200' : ''}`}>
                                 <Download className="inline-block mr-2" size={18}/>
                                 Export Data
+                            </Link>
+                        </li>
+                        <li className="mb-2">
+                            <Link href="/import"
+                                  className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/import' ? 'bg-gray-200' : ''}`}>
+                                <Upload className="inline-block mr-2" size={18}/>
+                                Import Data
                             </Link>
                         </li>
                         {isClient && trackers.map((tracker) => (
