@@ -18,6 +18,14 @@ interface EditTrackerProps {
     onClose: () => void
 }
 
+interface TrackerChanges {
+    name?: string
+    category?: string
+    addedOptions: TrackerOption[]
+    removedOptions: TrackerOption[]
+    changedOptions: { old: TrackerOption; new: TrackerOption }[]
+}
+
 const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) => {
     const { updateTracker, getCategories, updateTrackerOptions } = useTracker()
     const [name, setName] = useState(tracker.name)
@@ -29,13 +37,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
     const [newOptionTextColor, setNewOptionTextColor] = useState('#ffffff')
     const [isColorManuallySelected, setIsColorManuallySelected] = useState(false)
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
-    const [changes, setChanges] = useState<{
-        name?: string
-        category?: string
-        addedOptions: TrackerOption[]
-        removedOptions: TrackerOption[]
-        changedOptions: { old: TrackerOption; new: TrackerOption }[]
-    }>({
+    const [changes, setChanges] = useState<TrackerChanges>({
         addedOptions: [],
         removedOptions: [],
         changedOptions: [],
@@ -58,9 +60,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
     }, [newOptionLabel, isColorManuallySelected])
 
     const handleSave = () => {
-        const newChanges = {
-            name: tracker.name,
-            category: tracker.category,
+        const newChanges: TrackerChanges = {
             addedOptions: options.filter(option => !tracker.options.some(o => o.label === option.label)),
             removedOptions: tracker.options.filter(option => !options.some(o => o.label === option.label)),
             changedOptions: options.filter(option => {
