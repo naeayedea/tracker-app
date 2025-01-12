@@ -22,5 +22,6 @@ export interface TrackerContextType {
     switchYear: (tracker: Tracker, year: number) => void;
     importTrackers: (importedTrackers: Tracker[]) => void;
     getCategories: () => string[];
+    updateTrackerOptions: (trackerId: string, updatedOptions: TrackerOption[]) => void;
 }
 

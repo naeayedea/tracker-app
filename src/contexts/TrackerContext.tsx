@@ -1,7 +1,7 @@
 'use client'
 
 import React, {createContext, useContext} from 'react'
-import { Tracker, TrackerContextType } from '@/types/tracker'
+import {Tracker, TrackerContextType, TrackerOption} from '@/types/tracker'
 import {useLocalStorage} from "react-use";
 
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined)
@@ -117,6 +117,19 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return [...new Set(trackers.map(tracker => tracker.category))].filter(Boolean)
     }
 
+    const updateTrackerOptions = (trackerId: string, updatedOptions: TrackerOption[]) => {
+        if (trackers !== undefined) {
+            setTrackers(trackers.map(tracker => {
+                if (tracker.id === trackerId) {
+                    return { ...tracker, options: updatedOptions }
+                }
+                return tracker
+            }))
+        } else {
+            console.warn("No trackers stored, could not update options for tracker with id {}", trackerId)
+        }
+    }
+
     return (
         <TrackerContext.Provider value={{
             trackers: trackers !== undefined ? trackers : [],
@@ -126,7 +139,8 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
             setTrackerValue,
             switchYear,
             importTrackers,
-            getCategories
+            getCategories,
+            updateTrackerOptions
         }}>
             {children}
         </TrackerContext.Provider>
