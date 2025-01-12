@@ -6,16 +6,26 @@ import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker, TrackerOption } from '@/types/tracker'
 import { hashStringToColor, getContrastColor, isColorValid } from '@/utils/colorUtils'
 import { X, Plus } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import CategoryInput from "@/components/CategoryInput";
 
 const TrackerCreator: React.FC = () => {
-    const { addTracker } = useTracker()
+    const { addTracker, getCategories } = useTracker()
     const router = useRouter()
     const [name, setName] = useState('')
+    const [category, setCategory] = useState('')
     const [options, setOptions] = useState<TrackerOption[]>([])
     const [optionLabel, setOptionLabel] = useState('')
     const [optionColor, setOptionColor] = useState('#000000')
     const [textColor, setTextColor] = useState('#ffffff')
     const [isColorManuallySelected, setIsColorManuallySelected] = useState(false)
+    const [categories, setCategories] = useState<string[]>([])
+
+    useEffect(() => {
+        setCategories(getCategories())
+    }, [getCategories])
 
     useEffect(() => {
         if (optionLabel && !isColorManuallySelected) {
@@ -45,6 +55,7 @@ const TrackerCreator: React.FC = () => {
             const newTracker: Tracker = {
                 id: Date.now().toString(),
                 name,
+                category,
                 options,
                 data: { [year]: {} },
                 currentDate: year
@@ -62,7 +73,7 @@ const TrackerCreator: React.FC = () => {
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             if (e.currentTarget.id === 'tracker-name' && name) {
-                document.getElementById('option-label')?.focus()
+                document.getElementById('category')?.focus()
             } else if (e.currentTarget.id === 'option-label') {
                 handleAddOption()
             }
@@ -70,37 +81,34 @@ const TrackerCreator: React.FC = () => {
     }
 
     return (
-        <div className="w-full max-w-full mx-auto px-4">
-            <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
+        <div className="w-full max-w-4xl mx-auto px-4">
+            <div className="bg-white shadow-lg rounded-xl p-8 mb-8">
                 <h2 className="text-2xl font-semibold mb-6 text-gray-800">Create New Tracker</h2>
                 <div className="mb-6">
-                    <label htmlFor="tracker-name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Tracker Name
-                    </label>
-                    <input
+                    <Label htmlFor="tracker-name">Tracker Name</Label>
+                    <Input
                         id="tracker-name"
-                        type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         onKeyUp={handleKeyPress}
                         placeholder="Enter tracker name"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                 </div>
                 <div className="mb-6">
-                    <label htmlFor="option-label" className="block text-sm font-medium text-gray-700 mb-2">
-                        Add Option
-                    </label>
-                    <div className="flex space-x-2">
-                        <input
-                            id="option-label"
-                            type="text"
-                            value={optionLabel}
-                            onChange={(e) => setOptionLabel(e.target.value)}
-                            onKeyUp={handleKeyPress}
-                            placeholder="Option Label"
-                            className="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
+                    <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} />
+                </div>
+                <div className="mb-6">
+                    <Label htmlFor="option-label">Add Option</Label>
+                    <div className="flex space-x-2 ">
+                        <div className={"flex flex-col align-middle justify-center content-center flex-grow"}>
+                            <Input
+                                id="option-label"
+                                value={optionLabel}
+                                onChange={(e) => setOptionLabel(e.target.value)}
+                                onKeyUp={handleKeyPress}
+                                placeholder="Option label"
+                            />
+                        </div>
                         <div className={"w-12 h-12 rounded-lg overflow-hidden"}>
                             <input
                                 type="color"
@@ -111,7 +119,7 @@ const TrackerCreator: React.FC = () => {
                                     setTextColor(getContrastColor(newColor));
                                     setIsColorManuallySelected(true);
                                 }}
-                                className="w-24 h-24 cursor-pointer overflow-hidden -translate-x-1/4 -translate-y-1/4"
+                                className="w-24 h-24 -translate-x-1/4 -translate-y-1/4"
                                 style={{
                                     appearance: 'none',
                                     background: 'none',

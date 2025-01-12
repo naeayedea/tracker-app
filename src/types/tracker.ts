@@ -7,9 +7,10 @@ export interface TrackerOption {
 export interface Tracker {
     id: string;
     name: string;
+    category: string;
     options: TrackerOption[];
     data: Record<number, { [date: string]: string }>;
-    currentDate: number,
+    currentDate: number;
 }
 
 export interface TrackerContextType {
@@ -20,5 +21,6 @@ export interface TrackerContextType {
     setTrackerValue: (trackerId: string, year:number, date: string, value: string) => void;
     switchYear: (tracker: Tracker, year: number) => void;
     importTrackers: (importedTrackers: Tracker[]) => void;
+    getCategories: () => string[];
 }
 

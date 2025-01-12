@@ -1,7 +1,7 @@
 'use client'
 
 import React, {createContext, useContext} from 'react'
-import { Tracker, TrackerContextType } from '../types/tracker'
+import { Tracker, TrackerContextType } from '@/types/tracker'
 import {useLocalStorage} from "react-use";
 
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined)
@@ -109,6 +109,13 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         })
     }
 
+    const getCategories = () => {
+        if (trackers === undefined) {
+            return []
+        }
+
+        return [...new Set(trackers.map(tracker => tracker.category))].filter(Boolean)
+    }
 
     return (
         <TrackerContext.Provider value={{
@@ -118,7 +125,8 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
             deleteTracker,
             setTrackerValue,
             switchYear,
-            importTrackers
+            importTrackers,
+            getCategories
         }}>
             {children}
         </TrackerContext.Provider>
