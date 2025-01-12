@@ -168,6 +168,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                                 id="edit-tracker-name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                className={"w-full"}
                             />
                         </div>
                         <div>
@@ -178,7 +179,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                             <div className="space-y-2">
                                 {options.map((option, index) => (
                                     <div key={index} className="flex items-center space-x-2">
-                                        <div className={"w-8 h-8 rounded-full overflow-hidden"}>
+                                        <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
                                             <input
                                                 type="color"
                                                 value={option.color}
@@ -209,19 +210,23 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                                     value={newOptionLabel}
                                     onChange={(e) => setNewOptionLabel(e.target.value)}
                                     placeholder="New option label"
+                                    className={"flex-grow"}
                                 />
-                                <input
-                                    type="color"
-                                    value={newOptionColor}
-                                    onChange={(e) => {
-                                        setNewOptionColor(e.target.value);
-                                        setNewOptionTextColor(getContrastColor(e.target.value));
-                                        setIsColorManuallySelected(true);
-                                    }}
-                                    className="w-8 h-8 rounded-full cursor-pointer overflow-hidden"
-                                />
+                                <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
+                                    <input
+                                        type="color"
+                                        value={newOptionColor}
+                                        onChange={(e) => {
+                                            setNewOptionColor(e.target.value);
+                                            setNewOptionTextColor(getContrastColor(e.target.value));
+                                            setIsColorManuallySelected(true);
+                                        }}
+                                        className="w-16 h-16 basis-1 -translate-x-1/4 -translate-y-1/4 rounded-full cursor-pointer overflow-hidden"
+                                    />
+                                </div>
+
                                 <Button onClick={handleAddOption} size="icon">
-                                    <Plus size={18} />
+                                    <Plus size={18}/>
                                 </Button>
                             </div>
                         </div>

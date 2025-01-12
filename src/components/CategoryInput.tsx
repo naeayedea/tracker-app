@@ -64,7 +64,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({category, setCategory, cat
             </Select>
             {category === 'new' && (
                 <Input
-                    className="mt-2"
+                    className="mt-2 w-full"
                     placeholder="Enter new category"
                     value={categoryTextInput}
                     onChange={(e) => setCategoryTextInput(e.target.value)}

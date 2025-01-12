@@ -92,6 +92,7 @@ const TrackerCreator: React.FC = () => {
                         onChange={(e) => setName(e.target.value)}
                         onKeyUp={handleKeyPress}
                         placeholder="Enter tracker name"
+                        className={"w-full"}
                     />
                 </div>
                 <div className="mb-6">
@@ -107,6 +108,7 @@ const TrackerCreator: React.FC = () => {
                                 onChange={(e) => setOptionLabel(e.target.value)}
                                 onKeyUp={handleKeyPress}
                                 placeholder="Option label"
+                                className={"w-full"}
                             />
                         </div>
                         <div className={"w-12 h-12 rounded-lg overflow-hidden"}>

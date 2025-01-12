@@ -7,9 +7,13 @@ import { useTracker } from '@/contexts/TrackerContext'
 import { Menu, Plus, Download, Upload } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
-const TrackerMenu: React.FC = () => {
+interface TrackerMenuProps {
+    isOpen: boolean;
+    setIsOpen: (state: boolean) => void
+}
+
+const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
     const { trackers, getCategories } = useTracker()
-    const [isOpen, setIsOpen] = useState(false)
     const [isClient, setIsClient] = useState(false)
     const [categories, setCategories] = useState<string[]>([])
     const pathname = usePathname()
@@ -33,15 +37,6 @@ const TrackerMenu: React.FC = () => {
 
     return (
         <>
-            <div className="md:hidden bg-white shadow-md py-4 px-4">
-                <div className="flex items-center">
-                    <button onClick={toggleMenu} className="p-2">
-                        <Menu />
-                    </button>
-                    <h2 className="text-xl font-bold ml-2">Trackers</h2>
-                </div>
-            </div>
-
             <div
                 className={`fixed top-0 left-0 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:h-screen`}
                 style={{ width: '250px' }}
