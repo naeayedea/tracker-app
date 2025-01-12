@@ -20,6 +20,10 @@
     --input-hover: #9e9e9f;
 }
 
+::-webkit-file-upload-button {
+    cursor:pointer;
+}
+
 .page-main-content {
     scrollbar-gutter: stable both-edges;
 }
