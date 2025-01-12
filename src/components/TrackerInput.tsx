@@ -8,10 +8,11 @@ interface TrackerInputProps {
     date: Date;
     currentValue: string;
     onClose: () => void;
+    onUnset: () => void;
     onSave: (value: string) => void;
 }
 
-const TrackerInput: React.FC<TrackerInputProps> = ({ tracker, date, currentValue, onClose, onSave }) => {
+const TrackerInput: React.FC<TrackerInputProps> = ({ tracker, date, currentValue, onClose, onSave, onUnset }) => {
     const [selectedValue, setSelectedValue] = useState(currentValue);
 
     useEffect(() => {
@@ -50,8 +51,14 @@ const TrackerInput: React.FC<TrackerInputProps> = ({ tracker, date, currentValue
                         Cancel
                     </button>
                     <button
+                        onClick={() => onUnset()}
+                        className={`bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors`}
+                    >
+                        Unset
+                    </button>
+                    <button
                         onClick={() => onSave(selectedValue)}
-                        className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors ${
+                        className={`bg-blue-500 text-white px-4 py-2 rounded enabled:hover:bg-blue-600 transition-colors ${
                             !selectedValue ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                         disabled={!selectedValue}

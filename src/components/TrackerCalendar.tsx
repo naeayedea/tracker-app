@@ -20,7 +20,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
     const [yearInput, setYearInput] = useState<string>("" + year)
     const [showKey, setShowKey] = useState(false);
     const [hoveredDate, setHoveredDate] = useState<string | null>(null);
-    const { setTrackerValue, switchYear } = useTracker();
+    const { setTrackerValue, unsetTrackerValue, switchYear } = useTracker();
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -138,6 +138,10 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                     date={selectedDate}
                     currentValue={tracker.data[year][selectedDate.toISOString().split('T')[0]] || ''}
                     onClose={() => setSelectedDate(null)}
+                    onUnset={() => {
+                        unsetTrackerValue(tracker.id, year, selectedDate.toISOString().split('T')[0]);
+                        setSelectedDate(null);
+                    }}
                     onSave={(value) => {
                         setTrackerValue(tracker.id, year, selectedDate.toISOString().split('T')[0], value);
                         setSelectedDate(null);

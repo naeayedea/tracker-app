@@ -56,6 +56,25 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }
 
+    const unsetTrackerValue = (trackerId: string, year: number, date:string)  => {
+        if (trackers !== undefined) {
+            setTrackers(trackers.map(tracker => {
+                if (tracker.id === trackerId) {
+                    const dataToUpdate = tracker.data[year]
+
+                    const updatedData =  { ...dataToUpdate }
+
+                    delete updatedData[date]
+
+                    return { ...tracker, data: { ...tracker.data, [year]: updatedData } }
+                }
+                return tracker
+            }))
+        } else {
+            console.warn("No trackers stored, could not set value for tracker with id {}", trackerId)
+        }
+    }
+
     const setTrackerValue = (trackerId: string, year: number, date: string, value: string) => {
         if (trackers !== undefined) {
             setTrackers(trackers.map(tracker => {
@@ -155,6 +174,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
             addTracker,
             updateTracker,
             deleteTracker,
+            unsetTrackerValue,
             setTrackerValue,
             switchYear,
             importTrackers,
