@@ -121,7 +121,26 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (trackers !== undefined) {
             setTrackers(trackers.map(tracker => {
                 if (tracker.id === trackerId) {
-                    return { ...tracker, options: updatedOptions }
+                    const removedOptions = tracker.options.filter(
+                        option => !updatedOptions.some(updatedOption => updatedOption.label === option.label)
+                    )
+                    const updatedData = { ...tracker.data }
+
+                    // Unset dates for removed options
+                    Object.keys(updatedData).forEach(year => {
+                        const yearNumber = parseInt(year)
+                        updatedData[yearNumber] = Object.fromEntries(
+                            Object.entries(updatedData[yearNumber]).filter(([, value]) =>
+                                !removedOptions.some(option => option.label === value)
+                            )
+                        )
+                    })
+
+                    return {
+                        ...tracker,
+                        options: updatedOptions,
+                        data: updatedData
+                    }
                 }
                 return tracker
             }))
