@@ -97,7 +97,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     })
                     mergedTrackers[existingTrackerIndex] = {
                         ...existingTracker,
-                        options: [...new Set([...existingTracker.options, ...importedTracker.options])],
+                        options: [...new Set([...existingTracker.options, ...importedTracker.options.filter(option => existingTracker.options.findIndex(o => o.label === option.label) === -1)])],
                         data: mergedData
                     }
                 } else {
