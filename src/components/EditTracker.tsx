@@ -88,8 +88,8 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
             newChanges.category = category;
         }
 
-        const updatedOptionsWithDeletions = options.filter(o => !o.isDeleted)
-        const originalOptionsWithoutDeletions = tracker.options.filter(o => updatedOptionsWithDeletions.findIndex(uo => uo.label === o.label) !== -1)
+        const updatedOptionsWithDeletions = options.filter(o => !o.isDeleted).map(o => o.label)
+        const originalOptionsWithoutDeletions = tracker.options.filter(o => updatedOptionsWithDeletions.findIndex(uo => uo === o.label) !== -1).map(o => o.label)
 
         if (JSON.stringify(originalOptionsWithoutDeletions) !== JSON.stringify(updatedOptionsWithDeletions)) {
             newChanges.reorderedOptions = {old: tracker.options, new: options.filter(o => !o.isDeleted)}

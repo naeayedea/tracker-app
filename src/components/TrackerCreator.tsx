@@ -109,8 +109,8 @@ const TrackerCreator: React.FC = () => {
                             className={"w-full my-2"}
                         />
                     </div>
-                    <div className={"flex flex-col align-middle justify-center content-center"}>
-                        <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
+                    <div className={"flex flex-col align-middle justify-center content-center "}>
+                        <div className={"w-8 h-8 rounded-lg overflow-hidden cursor-pointer"}>
                             <input
                                 type="color"
                                 value={optionColor}
@@ -120,7 +120,7 @@ const TrackerCreator: React.FC = () => {
                                     setTextColor(getContrastColor(newColor));
                                     setIsColorManuallySelected(true);
                                 }}
-                                className="w-16 h-16 -translate-x-1/4 -translate-y-1/4"
+                                className="w-16 h-16 -translate-x-1/4 -translate-y-1/4 cursor-pointer"
                                 style={{
                                     appearance: 'none',
                                     background: 'none',
