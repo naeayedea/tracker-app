@@ -1,17 +1,17 @@
 'use client'
 
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect, useCallback} from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
-import {Tracker, TrackerOption} from '@/types/tracker'
+import { Tracker, TrackerOption } from '@/types/tracker'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import CategoryInput from "@/components/CategoryInput";
-import {getContrastColor, hashStringToColor, isColorValid} from "@/utils/colorUtils";
-import {Plus, X} from "lucide-react";
+import { getContrastColor, hashStringToColor, isColorValid } from "@/utils/colorUtils";
+import { GripVertical, Plus } from "lucide-react";
 import ConfirmEditDialog from "@/components/ConfirmEditDialog";
-import {Switch} from "@/components/ui/switch";
+import { Switch } from "@/components/ui/switch";
 
 interface EditTrackerProps {
     tracker: Tracker
@@ -25,6 +25,7 @@ interface TrackerChanges {
     addedOptions: TrackerOption[]
     removedOptions: TrackerOption[]
     changedOptions: { old: TrackerOption; new: TrackerOption }[]
+    reorderedOptions?: {old: TrackerOption[], new: TrackerOption[]}
 }
 
 interface ExtendedTrackerOption extends TrackerOption {
@@ -46,6 +47,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         addedOptions: [],
         removedOptions: [],
         changedOptions: [],
+        reorderedOptions: {old: [], new: []}
     })
     const [datesAffected, setDatesAffected] = useState<{ [optionLabel: string]: string[] }>({})
 
@@ -75,6 +77,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                 old: tracker.options.find(o => o.label === option.label)!,
                 new: option
             })),
+            // reorderedOptions: JSON.stringify(tracker.options.map(o => o.label)) !== JSON.stringify(options.filter(o => !o.isDeleted).map(o => o.label)) ? {old: tracker.options, new: options.filter(o => !o.isDeleted)} : {old: [], new: []}
         };
 
         if (name !== tracker.name) {
@@ -83,6 +86,13 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
 
         if (category !== tracker.category) {
             newChanges.category = category;
+        }
+
+        const updatedOptionsWithDeletions = options.filter(o => !o.isDeleted)
+        const originalOptionsWithoutDeletions = tracker.options.filter(o => updatedOptionsWithDeletions.findIndex(uo => uo.label === o.label) !== -1)
+
+        if (JSON.stringify(originalOptionsWithoutDeletions) !== JSON.stringify(updatedOptionsWithDeletions)) {
+            newChanges.reorderedOptions = {old: tracker.options, new: options.filter(o => !o.isDeleted)}
         }
 
         setChanges(newChanges);
@@ -154,6 +164,35 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         onClose()
     }
 
+    const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, targetLabel: string) => {
+        e.dataTransfer.setData(targetLabel, targetLabel)
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setDragImage(document.createElement('canvas'), 0, 0);
+    }, []);
+
+    const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, targetLabel:string) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        const sourceLabel: string = e.dataTransfer.types[0]
+
+        if (sourceLabel.toLowerCase() !== targetLabel.toLowerCase()) {
+            const sourceIndex = options.findIndex(o => o.label.toLowerCase() === sourceLabel.toLowerCase());
+            const targetIndex = options.findIndex(o => o.label.toLowerCase() === targetLabel.toLowerCase());
+
+            setOptions((prevOptions) => {
+                const newOptions = [...prevOptions];
+
+                const temp = newOptions[sourceIndex]
+
+                newOptions[sourceIndex] = newOptions[targetIndex]
+                newOptions[targetIndex] = temp
+
+                return newOptions;
+            });
+        }
+    }, [options]);
+
     return (
         <>
             <Dialog open={isOpen} onOpenChange={onClose}>
@@ -178,7 +217,15 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                             <Label>Options</Label>
                             <div className="space-y-2">
                                 {options.map((option, index) => (
-                                    <div key={index} className="flex items-center space-x-2">
+                                    <div key={option.label}
+                                         className="flex items-center space-x-2 border rounded-md p-2"
+                                         draggable={true}
+                                         onDragStart={(e) => handleDragStart(e, option.label)}
+                                         onDragOver={(e) => handleDragOver(e, option.label)}
+                                    >
+                                        <div>
+                                            <GripVertical size={20} className={"hover:cursor-move"} />
+                                        </div>
                                         <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
                                             <input
                                                 type="color"

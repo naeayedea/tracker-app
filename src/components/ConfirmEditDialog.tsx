@@ -26,6 +26,7 @@ interface ConfirmEditDialogProps {
         addedOptions: TrackerOption[]
         removedOptions: TrackerOption[]
         changedOptions: { old: TrackerOption; new: TrackerOption }[]
+        reorderedOptions?: { old: TrackerOption[], new: TrackerOption[] }
     }
     datesAffected: { [optionLabel: string]: string[] }
 }
@@ -129,6 +130,55 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                                         </li>
                                     ))}
                                 </ul>
+                            </Section>
+                        )}
+                        {changes.reorderedOptions && (
+                            <Section title="Reordered Options">
+                                <h5 className="font-medium my-2">{"Old"}</h5>
+
+                                {changes.reorderedOptions.old.map((option) => (
+                                    <div key={option.label}
+                                         className="flex items-center space-x-2 border rounded-md p-2"
+                                    >
+                                        <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
+                                            <input
+                                                type="color"
+                                                value={option.color}
+                                                className="w-16 h-16 -translate-x-1/4 -translate-y-1/4 cursor-pointer disabled:cursor-default"
+                                                disabled={true}
+                                            />
+                                        </div>
+                                        <span
+                                            className="flex-grow px-2 py-1 rounded"
+                                            style={{backgroundColor: option.color, color: option.textColor}}
+                                        >
+                                            {option.label}
+                                        </span>
+                                    </div>
+                                ))}
+
+                                <h5 className="font-medium my-2">{"New"}</h5>
+
+                                {changes.reorderedOptions.new.map((option) => (
+                                    <div key={option.label}
+                                         className="flex items-center space-x-2 border rounded-md p-2"
+                                    >
+                                        <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
+                                            <input
+                                                type="color"
+                                                value={option.color}
+                                                className="w-16 h-16 -translate-x-1/4 -translate-y-1/4 cursor-pointer disabled:cursor-default"
+                                                disabled={true}
+                                            />
+                                        </div>
+                                        <span
+                                            className="flex-grow px-2 py-1 rounded"
+                                            style={{backgroundColor: option.color, color: option.textColor}}
+                                        >
+                                            {option.label}
+                                        </span>
+                                    </div>
+                                ))}
                             </Section>
                         )}
                         {Object.keys(datesAffected).length > 0 && (
