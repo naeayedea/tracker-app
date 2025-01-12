@@ -49,7 +49,7 @@ const ImportData: React.FC = () => {
     }
 
     return (
-        <div className="bg-white shadow-lg rounded-xl p-8 mb-8 max-w-2xl mx-auto">
+        <div className="bg-white shadow-lg rounded-xl p-8 mx-auto min-w-full">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Import Data</h2>
             <div className="mb-4">
                 <input

@@ -5,6 +5,7 @@
 /* Add this at the end of the file */
 * {
     scroll-behavior: auto;
+    scrollbar-width: thin
 }
 
 :root {
@@ -17,4 +18,8 @@
     --accent: #d6d7db;
     --input: #e5e7eb;
     --input-hover: #9e9e9f;
+}
+
+.page-main-content {
+    scrollbar-gutter: stable both-edges;
 }

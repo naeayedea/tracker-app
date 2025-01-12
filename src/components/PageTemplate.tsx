@@ -24,11 +24,15 @@ export default function PageTemplate({ children }: { children: React.ReactNode})
             <Header toggleSideMenu={toggleSideMenu} />
             <div className="flex flex-1 overflow-hidden">
                 {isClient && <TrackerMenu isOpen={isSideMenuOpen || width > 1000} setIsOpen={setIsSideMenuOpen}/>}
-                <main className="flex-1 overflow-y-auto p-4">
-                    {children}
+                <main className="flex-1 overflow-y-auto p-4 page-main-content">
+                    <div className={"p-2 min-h-full max-h-full"}>
+                        <div className="mx-auto w-[1920px] max-w-full min-h-full">
+                            {children}
+                        </div>
+                    </div>
                 </main>
             </div>
-            <Footer />
+            <Footer/>
         </div>
     )
 }

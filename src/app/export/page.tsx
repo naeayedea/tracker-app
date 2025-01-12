@@ -28,8 +28,8 @@ export default function ExportPage() {
 
     return (
         <PageTemplate>
-            <div className={"flex content-center justify-center w-full px-4 pb-8"}>
-                <div className="bg-white shadow-lg rounded-xl p-6 mb-8 w-full">
+            <div className={"flex content-center justify-center w-full"}>
+                <div className="bg-white shadow-lg rounded-xl p-8 w-full">
                     <h2 className="text-2xl font-semibold mb-6 text-gray-800">Export Your Tracker Data</h2>
                     <div className="mb-6">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
