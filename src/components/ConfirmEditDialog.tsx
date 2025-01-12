@@ -150,7 +150,7 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                                             <AccordionItem value={`option-${index}`} key={index}>
                                                 <AccordionTrigger>{optionLabel}</AccordionTrigger>
                                                 <AccordionContent>
-                                                    <ScrollArea className="h-[200px] w-full rounded-md border p-4">
+                                                    <ScrollArea className="w-full rounded-md border p-4">
                                                         {renderDates(dates)}
                                                     </ScrollArea>
                                                 </AccordionContent>

@@ -11,6 +11,7 @@ import CategoryInput from "@/components/CategoryInput";
 import {getContrastColor, hashStringToColor, isColorValid} from "@/utils/colorUtils";
 import {Plus, X} from "lucide-react";
 import ConfirmEditDialog from "@/components/ConfirmEditDialog";
+import {Switch} from "@/components/ui/switch";
 
 interface EditTrackerProps {
     tracker: Tracker
@@ -26,11 +27,15 @@ interface TrackerChanges {
     changedOptions: { old: TrackerOption; new: TrackerOption }[]
 }
 
+interface ExtendedTrackerOption extends TrackerOption {
+    isDeleted: boolean
+}
+
 const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) => {
     const { updateTracker, getCategories, updateTrackerOptions } = useTracker()
     const [name, setName] = useState(tracker.name)
     const [category, setCategory] = useState(tracker.category)
-    const [options, setOptions] = useState<TrackerOption[]>(tracker.options)
+    const [options, setOptions] = useState<ExtendedTrackerOption[]>(tracker.options.map(option => ({ ...option, isDeleted: false })))
     const [categories, setCategories] = useState<string[]>([])
     const [newOptionLabel, setNewOptionLabel] = useState('')
     const [newOptionColor, setNewOptionColor] = useState('#000000')
@@ -61,11 +66,11 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
 
     const handleSave = () => {
         const newChanges: TrackerChanges = {
-            addedOptions: options.filter(option => !tracker.options.some(o => o.label === option.label)),
-            removedOptions: tracker.options.filter(option => !options.some(o => o.label === option.label)),
+            addedOptions: options.filter(option => !tracker.options.some(o => o.label === option.label) && !option.isDeleted),
+            removedOptions: options.filter(option => option.isDeleted),
             changedOptions: options.filter(option => {
                 const oldOption = tracker.options.find(o => o.label === option.label);
-                return oldOption && (oldOption.color !== option.color || oldOption.textColor !== option.textColor);
+                return oldOption && !option.isDeleted && (oldOption.color !== option.color || oldOption.textColor !== option.textColor);
             }).map(option => ({
                 old: tracker.options.find(o => o.label === option.label)!,
                 new: option
@@ -104,10 +109,11 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         const updatedTracker: Tracker = {
             ...tracker,
             name,
-            category
+            category,
+            options: options.filter(option => !option.isDeleted)
         }
         updateTracker(updatedTracker)
-        updateTrackerOptions(tracker.id, options)
+        updateTrackerOptions(tracker.id, updatedTracker.options)
 
         setIsConfirmDialogOpen(false);
         onClose()
@@ -115,7 +121,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
 
     const handleAddOption = () => {
         if (newOptionLabel) {
-            setOptions([...options, { label: newOptionLabel, color: newOptionColor, textColor: newOptionTextColor }])
+            setOptions([...options, { label: newOptionLabel, color: newOptionColor, textColor: newOptionTextColor, isDeleted: false }])
             setNewOptionLabel('')
             setNewOptionColor('#000000')
             setNewOptionTextColor('#ffffff')
@@ -123,8 +129,10 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         }
     }
 
-    const handleRemoveOption = (index: number) => {
-        setOptions(options.filter((_, i) => i !== index))
+    const handleToggleOption = (index: number) => {
+        const updatedOptions = [...options]
+        updatedOptions[index].isDeleted = !updatedOptions[index].isDeleted
+        setOptions(updatedOptions)
     }
 
     const handleOptionColorChange = (index: number, color: string) => {
@@ -141,7 +149,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         setCategory(tracker.category)
         setName(tracker.name)
         setCategories(getCategories)
-        setOptions(tracker.options)
+        setOptions(tracker.options.map(option => ({ ...option, isDeleted: false })))
 
         onClose()
     }
@@ -170,25 +178,25 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                             <div className="space-y-2">
                                 {options.map((option, index) => (
                                     <div key={index} className="flex items-center space-x-2">
-                                        <input
-                                            type="color"
-                                            value={option.color}
-                                            onChange={(e) => handleOptionColorChange(index, e.target.value)}
-                                            className="w-8 h-8 rounded-full cursor-pointer overflow-hidden"
-                                        />
+                                        <div className={"w-8 h-8 rounded-full overflow-hidden"}>
+                                            <input
+                                                type="color"
+                                                value={option.color}
+                                                onChange={(e) => handleOptionColorChange(index, e.target.value)}
+                                                className="w-16 h-16 -translate-x-1/4 -translate-y-1/4 cursor-pointer disabled:cursor-default disabled:opacity-50"
+                                                disabled={option.isDeleted}
+                                            />
+                                        </div>
                                         <span
                                             className="flex-grow px-2 py-1 rounded"
-                                            style={{ backgroundColor: option.color, color: option.textColor }}
+                                            style={{backgroundColor: option.color, color: option.textColor}}
                                         >
                                             {option.label}
                                         </span>
-                                        <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            onClick={() => handleRemoveOption(index)}
-                                        >
-                                            <X size={18} />
-                                        </Button>
+                                        <Switch
+                                            checked={!option.isDeleted}
+                                            onCheckedChange={() => handleToggleOption(index)}
+                                        />
                                     </div>
                                 ))}
                             </div>
