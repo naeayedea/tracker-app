@@ -71,7 +71,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 monthDays.push(
                     <div
                         key={`${year}-${month}-${day}`}
-                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative"
+                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative rounded-md"
                         style={{ backgroundColor, color: textColor }}
                         onClick={() => setSelectedDate(date)}
                         onMouseEnter={() => setHoveredDate(dateString)}
@@ -90,9 +90,9 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
             calendar.push(
                 <div key={`${year}-${month}`} className="m-4">
                     <h3 className="font-bold mb-2">{new Date(year, month).toLocaleString('default', {month: 'long'})}</h3>
-                    <div className="grid grid-cols-7 gap-x-4 mb-0">{dayIndicator}</div>
+                    <div className="grid justify-items-end grid-cols-7 gap-x-4 mb-0">{dayIndicator}</div>
 
-                    <div className="grid grid-cols-7 gap-4">{monthDays}</div>
+                    <div className="grid justify-items-end grid-cols-7 gap-4">{monthDays}</div>
                 </div>
             );
         }
@@ -129,7 +129,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
             </div>
 
             {showKey && <TrackerKey tracker={tracker}/>}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {renderCalendar()}
             </div>
             {selectedDate && (
