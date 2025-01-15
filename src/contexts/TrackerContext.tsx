@@ -93,11 +93,11 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
 
     const importTrackers = (importedTrackers: Tracker[]) => {
-        setTrackers(prevTrackers => {
+        setTrackers(() => {
             let mergedTrackers: Tracker[];
 
-            if (prevTrackers !== undefined) {
-                mergedTrackers = [...prevTrackers]
+            if (trackers !== undefined) {
+                mergedTrackers = [...trackers]
             } else {
                 mergedTrackers = []
             }
