@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTracker } from '@/contexts/TrackerContext'
-import { Menu, Plus, Download, Upload } from 'lucide-react'
+import {Plus, Download, Upload, LayoutDashboard} from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 interface TrackerMenuProps {
@@ -47,20 +47,30 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                     </div>
                     <ul>
                         <li className="mb-2">
-                            <Link href="/" className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/' ? 'bg-gray-200' : ''}`}>
-                                <Plus className="inline-block mr-2" size={18} />
+                            <Link href="/"
+                                  className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/' ? 'bg-gray-200' : ''}`}>
+                                <Plus className="inline-block mr-2" size={18}/>
                                 Create New Tracker
                             </Link>
                         </li>
                         <li className="mb-2">
-                            <Link href="/export" className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/export' ? 'bg-gray-200' : ''}`}>
-                                <Download className="inline-block mr-2" size={18} />
+                            <Link href="/dashboard"
+                                  className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/dashboard' ? 'bg-gray-200' : ''}`}>
+                                <LayoutDashboard className="inline-block mr-2" size={18}/>
+                                Dashboard
+                            </Link>
+                        </li>
+                        <li className="mb-2">
+                            <Link href="/export"
+                                  className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/export' ? 'bg-gray-200' : ''}`}>
+                                <Download className="inline-block mr-2" size={18}/>
                                 Export Data
                             </Link>
                         </li>
                         <li className="mb-2">
-                            <Link href="/import" className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/import' ? 'bg-gray-200' : ''}`}>
-                                <Upload className="inline-block mr-2" size={18} />
+                            <Link href="/import"
+                                  className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/import' ? 'bg-gray-200' : ''}`}>
+                                <Upload className="inline-block mr-2" size={18}/>
                                 Import Data
                             </Link>
                         </li>
@@ -71,7 +81,7 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                                 <AccordionTrigger>{category}</AccordionTrigger>
                                 <AccordionContent>
                                     <ul>
-                                        {groupedTrackers[category].map((tracker) => (
+                                    {groupedTrackers[category].map((tracker) => (
                                             <li key={tracker.id} className="mb-2">
                                                 <Link
                                                     href={`/tracker/${tracker.id}`}

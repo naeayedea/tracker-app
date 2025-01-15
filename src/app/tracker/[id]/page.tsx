@@ -4,11 +4,13 @@ import React, {useEffect, useState} from 'react'
 import { useRouter } from 'next/navigation'
 import { useTracker } from '@/contexts/TrackerContext'
 import TrackerCalendar from '@/components/TrackerCalendar'
+import TrackerStatistics from '@/components/TrackerStatistics'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { useParams } from 'next/navigation'
 import PageTemplate from "@/components/PageTemplate";
 import {Button} from "@/components/ui/button";
 import EditTracker from "@/components/EditTracker";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function TrackerPage() {
     const [isClient, setIsClient] = useState(false);
@@ -77,7 +79,18 @@ export default function TrackerPage() {
                             <Button onClick={handleDeleteClick} variant="destructive">Delete Tracker</Button>
                         </div>
                     </div>
-                    <TrackerCalendar tracker={tracker}/>
+                    <Tabs defaultValue="calendar" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="calendar">Calendar</TabsTrigger>
+                            <TabsTrigger value="statistics">Statistics</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="calendar">
+                            <TrackerCalendar tracker={tracker} />
+                        </TabsContent>
+                        <TabsContent value="statistics">
+                            <TrackerStatistics tracker={tracker} />
+                        </TabsContent>
+                    </Tabs>
                 </div>
 
                 <ConfirmDialog
