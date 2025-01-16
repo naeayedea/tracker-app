@@ -9,7 +9,7 @@ import {useWindowSize} from "react-use";
 export default function PageTemplate({ children }: { children: React.ReactNode}) {
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false)
     const [isClient, setIsClient] = useState(false)
-    const {width} = useWindowSize()
+    const {width: width} = useWindowSize()
 
     useEffect(() => {
         setIsClient(true)
@@ -20,10 +20,10 @@ export default function PageTemplate({ children }: { children: React.ReactNode})
     }
 
     return (
-        <div className="flex flex-col min-h-screen max-h-screen">
+        <div className="flex flex-col min-h-screen max-h-screen h-screen">
             <Header toggleSideMenu={toggleSideMenu} />
-            <div className="flex flex-1 overflow-hidden">
-                {isClient && <TrackerMenu isOpen={isSideMenuOpen || width > 1000} setIsOpen={setIsSideMenuOpen}/>}
+            <div className="flex flex-1 overflow-hidden h-screen max-h-screen">
+                {isClient && <TrackerMenu isOpen={isSideMenuOpen || width > 1024} setIsOpen={setIsSideMenuOpen}/>}
                 <main className="flex-1 overflow-y-auto p-4 page-main-content">
                     <div className={"p-2 min-h-full max-h-full"}>
                         <div className="mx-auto w-[1920px] max-w-full min-h-full">

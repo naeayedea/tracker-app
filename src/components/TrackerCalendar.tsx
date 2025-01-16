@@ -48,7 +48,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 dayIndicator.push(
                     <div
                         key={`${year}-${month}-day-string-${dayString}`}
-                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative"
+                        className="w-8 h-8 md:w-9 md:h-9 2xl:w-12 2xl:h-12 flex items-center justify-center cursor-pointer relative"
                     >
                         {dayString}
                     </div>
@@ -57,7 +57,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
 
             for (let pad = 0; pad < dayPadLookup[firstDayOfMonth]; pad++) {
                 monthDays.push(
-                    <div key={`${year}-${month}-pad-${pad}`} className={"w-12 h-12 flex items-center justify-center relative"} />
+                    <div key={`${year}-${month}-pad-${pad}`} className={"w-8 h-8 md:w-9 md:h-9 2xl:w-12 2xl:h-12 flex items-center justify-center relative"} />
                 )
             }
 
@@ -72,7 +72,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 monthDays.push(
                     <div
                         key={`${year}-${month}-${day}`}
-                        className="w-12 h-12 flex items-center justify-center cursor-pointer relative rounded-md"
+                        className="w-8 h-8 md:w-9 md:h-9 2xl:w-12 2xl:h-12 flex items-center justify-center cursor-pointer relative rounded-md"
                         style={{ backgroundColor, color: textColor }}
                         onClick={() => setSelectedDate(date)}
                         onMouseEnter={() => setHoveredDate(dateString)}
@@ -92,7 +92,6 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
                 <div key={`${year}-${month}`} className="m-4">
                     <h3 className="font-bold mb-2">{new Date(year, month).toLocaleString('default', {month: 'long'})}</h3>
                     <div className="grid justify-items-end grid-cols-7 gap-x-4 mb-0">{dayIndicator}</div>
-
                     <div className="grid justify-items-end grid-cols-7 gap-4">{monthDays}</div>
                 </div>
             );

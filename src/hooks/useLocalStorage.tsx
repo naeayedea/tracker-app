@@ -11,8 +11,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
 
     useEffect(() => {
         if (JSON.stringify(storedValue) !== JSON.stringify(initialValue)) {
-            console.log(storedValue)
-
             window.localStorage.setItem(key, JSON.stringify(storedValue));
         }
 
