@@ -72,11 +72,11 @@ export default function TrackerPage() {
         <PageTemplate>
             <div className="mx-auto w-[1920px] max-w-full min-h-full">
                 <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                         <h2 className="text-2xl font-semibold text-gray-800">{tracker.name}</h2>
-                        <div className="space-x-2">
-                            <Button onClick={handleEditClick} variant="outline">Edit Tracker</Button>
-                            <Button onClick={handleDeleteClick} variant="destructive">Delete Tracker</Button>
+                        <div className="space-x-2 py-6 px-1">
+                            <Button onClick={handleEditClick} variant="quiet" size={"sm"}>Edit Tracker</Button>
+                            <Button onClick={handleDeleteClick} variant="destructive" size={"sm"}>Delete Tracker</Button>
                         </div>
                     </div>
                     <Tabs defaultValue="calendar" className="w-full">

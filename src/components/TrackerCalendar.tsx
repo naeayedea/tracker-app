@@ -6,6 +6,7 @@ import { Tracker } from '@/types/tracker';
 import TrackerInput from '@/components/TrackerInput';
 import TrackerKey from '@/components/TrackerKey';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {Button} from "@/components/ui/button";
 
 interface TrackerCalendarProps {
     tracker: Tracker;
@@ -107,10 +108,10 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
 
     return (
         <div className={"flex flex-col"}>
-            <div className="flex justify-between items-center mb-4">
-                <button onClick={() => setShowKey(!showKey)} className="bg-blue-500 text-white px-4 py-2 rounded">
+            <div className="flex justify-between items-center mb-4 p-1">
+                <Button onClick={() => setShowKey(!showKey)} variant={"quiet"} size={"sm"}>
                     {showKey ? 'Hide Key' : 'Show Key'}
-                </button>
+                </Button>
             </div>
 
             <div className="flex items-center space-x-4 self-center ">

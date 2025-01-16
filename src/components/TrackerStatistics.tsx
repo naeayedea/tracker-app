@@ -50,7 +50,6 @@ const TrackerStatistics: React.FC<TrackerStatisticsProps> = ({ tracker }) => {
                                 <XAxis dataKey="label" />
                                 <YAxis />
                                 <Tooltip />
-                                <Legend />
                                 <Bar dataKey="count" name="Entries">
                                     {chartData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={entry.color} />
