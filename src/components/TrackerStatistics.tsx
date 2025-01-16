@@ -13,7 +13,9 @@ const TrackerStatistics: React.FC<TrackerStatisticsProps> = ({ tracker }) => {
     const currentYear = new Date().getFullYear()
     const yearData = tracker.data[currentYear] || {}
 
-    const optionCounts = tracker.options.reduce((acc, option) => {
+    const includedOptions = tracker.options.filter(option => !option.excludeFromSummary)
+
+    const optionCounts = includedOptions.reduce((acc, option) => {
         acc[option.label] = 0
         return acc
     }, {} as Record<string, number>)

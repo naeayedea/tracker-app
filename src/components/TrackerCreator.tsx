@@ -39,7 +39,7 @@ const TrackerCreator: React.FC = () => {
 
     const handleAddOption = () => {
         if (optionLabel) {
-            setOptions([...options, { label: optionLabel, color: optionColor, textColor }])
+            setOptions([...options, { label: optionLabel, color: optionColor, textColor, excludeFromSummary: false }])
             setOptionLabel('')
             setOptionColor('#000000')
             setTextColor('#ffffff')
@@ -57,7 +57,8 @@ const TrackerCreator: React.FC = () => {
                 category,
                 options,
                 data: { [year]: {} },
-                currentDate: year
+                currentDate: year,
+                excludeFromDashboard: false
             }
 
             addTracker(newTracker)

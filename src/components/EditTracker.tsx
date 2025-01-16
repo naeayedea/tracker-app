@@ -12,6 +12,7 @@ import { getContrastColor, hashStringToColor, isColorValid } from "@/utils/color
 import { GripVertical, Plus } from "lucide-react";
 import ConfirmEditDialog from "@/components/ConfirmEditDialog";
 import { Switch } from "@/components/ui/switch";
+import ManageExclusions from "@/components/ManageExclusions";
 
 interface EditTrackerProps {
     tracker: Tracker
@@ -22,10 +23,12 @@ interface EditTrackerProps {
 interface TrackerChanges {
     name?: string
     category?: string
+    excludeFromDashboard?: boolean
     addedOptions: TrackerOption[]
     removedOptions: TrackerOption[]
     changedOptions: { old: TrackerOption; new: TrackerOption }[]
     reorderedOptions?: {old: TrackerOption[], new: TrackerOption[]}
+    updatedExclusions?: TrackerOption[]
 }
 
 interface ExtendedTrackerOption extends TrackerOption {
@@ -37,6 +40,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
     const [name, setName] = useState(tracker.name)
     const [category, setCategory] = useState(tracker.category)
     const [options, setOptions] = useState<ExtendedTrackerOption[]>(tracker.options.map(option => ({ ...option, isDeleted: false })))
+    const [excludeFromDashboard, setExcludeFromDashboard] = useState(tracker.excludeFromDashboard)
     const [categories, setCategories] = useState<string[]>([])
     const [newOptionLabel, setNewOptionLabel] = useState('')
     const [newOptionColor, setNewOptionColor] = useState('#000000')
@@ -47,9 +51,11 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         addedOptions: [],
         removedOptions: [],
         changedOptions: [],
-        reorderedOptions: {old: [], new: []}
+        reorderedOptions: {old: [], new: []},
+        updatedExclusions: []
     })
     const [datesAffected, setDatesAffected] = useState<{ [optionLabel: string]: string[] }>({})
+    const [isManageExclusionsOpen, setIsManageExclusionsOpen] = useState(false)
 
     useEffect(() => {
         setCategories(getCategories())
@@ -77,7 +83,6 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                 old: tracker.options.find(o => o.label === option.label)!,
                 new: option
             })),
-            // reorderedOptions: JSON.stringify(tracker.options.map(o => o.label)) !== JSON.stringify(options.filter(o => !o.isDeleted).map(o => o.label)) ? {old: tracker.options, new: options.filter(o => !o.isDeleted)} : {old: [], new: []}
         };
 
         if (name !== tracker.name) {
@@ -88,11 +93,24 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
             newChanges.category = category;
         }
 
-        const updatedOptionsWithDeletions = options.filter(o => !o.isDeleted).map(o => o.label)
-        const originalOptionsWithoutDeletions = tracker.options.filter(o => updatedOptionsWithDeletions.findIndex(uo => uo === o.label) !== -1).map(o => o.label)
+        const optionsThatStillExist = options.filter(o => !o.isDeleted)
+        const originalOptionsWithoutDeletions = tracker.options.filter(o => optionsThatStillExist.findIndex(uo => uo.label === o.label) !== -1)
 
-        if (JSON.stringify(originalOptionsWithoutDeletions) !== JSON.stringify(updatedOptionsWithDeletions)) {
+        const nonDeletedLabels = optionsThatStillExist.map(o => o.label)
+        const originalOptionsThatStillExist = originalOptionsWithoutDeletions.map(o => o.label)
+
+        if (JSON.stringify(nonDeletedLabels) !== JSON.stringify(originalOptionsThatStillExist)) {
             newChanges.reorderedOptions = {old: tracker.options, new: options.filter(o => !o.isDeleted)}
+        }
+
+        if (excludeFromDashboard !== tracker.excludeFromDashboard) {
+            newChanges.excludeFromDashboard = excludeFromDashboard;
+        }
+
+        const optionsWithUpdatedExclusions = optionsThatStillExist.filter(option => option.excludeFromSummary != tracker.options.find(o => o.label == option.label)?.excludeFromSummary)
+
+        if (optionsWithUpdatedExclusions.length > 0) {
+            newChanges.updatedExclusions = optionsWithUpdatedExclusions
         }
 
         setChanges(newChanges);
@@ -120,8 +138,10 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
             ...tracker,
             name,
             category,
-            options: options.filter(option => !option.isDeleted)
+            options: options.filter(option => !option.isDeleted),
+            excludeFromDashboard: excludeFromDashboard
         }
+
         updateTracker(updatedTracker)
         updateTrackerOptions(tracker.id, updatedTracker.options)
 
@@ -131,7 +151,13 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
 
     const handleAddOption = () => {
         if (newOptionLabel) {
-            setOptions([...options, { label: newOptionLabel, color: newOptionColor, textColor: newOptionTextColor, isDeleted: false }])
+            setOptions([...options, {
+                label: newOptionLabel,
+                color: newOptionColor,
+                textColor: newOptionTextColor,
+                isDeleted: false,
+                excludeFromSummary: false
+            }])
             setNewOptionLabel('')
             setNewOptionColor('#000000')
             setNewOptionTextColor('#ffffff')
@@ -160,8 +186,16 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         setName(tracker.name)
         setCategories(getCategories)
         setOptions(tracker.options.map(option => ({ ...option, isDeleted: false })))
+        setExcludeFromDashboard(tracker.excludeFromDashboard)
 
         onClose()
+    }
+
+    const handleSaveExclusions = (updatedOptions: TrackerOption[]) => {
+        setOptions(options.map(option => {
+            const updatedOption = updatedOptions.find(o => o.label === option.label)
+            return updatedOption ? { ...option, excludeFromSummary: updatedOption.excludeFromSummary } : option
+        }))
     }
 
     const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, targetLabel: string) => {
@@ -211,7 +245,16 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                             />
                         </div>
                         <div>
-                            <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} />
+                            <CategoryInput category={category} setCategory={setCategory} categories={categories}
+                                           setCategories={setCategories}/>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="exclude-from-dashboard"
+                                checked={excludeFromDashboard}
+                                onCheckedChange={setExcludeFromDashboard}
+                            />
+                            <Label htmlFor="exclude-from-dashboard">Exclude from Dashboard</Label>
                         </div>
                         <div>
                             <Label>Options</Label>
@@ -224,9 +267,9 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                                          onDragOver={(e) => handleDragOver(e, option.label)}
                                     >
                                         <div>
-                                            <GripVertical size={20} className={"hover:cursor-move"} />
+                                            <GripVertical size={20} className={"hover:cursor-move"}/>
                                         </div>
-                                        <div className={"w-8 h-8 rounded-lg overflow-hidden"}>
+                                        <div className={`w-8 h-8 rounded-lg overflow-hidden`}>
                                             <input
                                                 type="color"
                                                 value={option.color}
@@ -236,7 +279,7 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                                             />
                                         </div>
                                         <span
-                                            className="flex-grow px-2 py-1 rounded"
+                                            className={`flex-grow px-2 py-1 rounded ${option.isDeleted && "opacity-50"}`}
                                             style={{backgroundColor: option.color, color: option.textColor}}
                                         >
                                             {option.label}
@@ -277,6 +320,12 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                                 </Button>
                             </div>
                         </div>
+                        <div>
+                            <Button onClick={() => setIsManageExclusionsOpen(true)} variant="outline"
+                                    className="w-full">
+                                Manage Option Exclusions
+                            </Button>
+                        </div>
                     </div>
                     <DialogFooter>
                         <Button onClick={handleCancel} variant="outline">Cancel</Button>
@@ -284,13 +333,19 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-            <ConfirmEditDialog
+            {isConfirmDialogOpen && <ConfirmEditDialog
                 isOpen={isConfirmDialogOpen}
                 onClose={() => setIsConfirmDialogOpen(false)}
                 onConfirm={handleConfirmChanges}
                 changes={changes}
                 datesAffected={datesAffected}
-            />
+            />}
+            {isManageExclusionsOpen && <ManageExclusions
+                isOpen={isManageExclusionsOpen}
+                onClose={() => setIsManageExclusionsOpen(false)}
+                options={options.filter(option => !option.isDeleted)}
+                onSave={handleSaveExclusions}
+            />}
         </>
     )
 }

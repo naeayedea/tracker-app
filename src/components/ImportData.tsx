@@ -28,7 +28,7 @@ const ImportData: React.FC = () => {
 
         try {
             const content = await file.text()
-            const parsedData = JSON.parse(content) as Tracker[]
+            const parsedData: Tracker[] = JSON.parse(content)
             setImportData(parsedData)
             setIsConfirmDialogOpen(true)
         } catch (err) {

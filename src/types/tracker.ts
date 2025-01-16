@@ -2,6 +2,7 @@ export interface TrackerOption {
     label: string;
     color: string;
     textColor: string;
+    excludeFromSummary: boolean;
 }
 
 export interface Tracker {
@@ -11,6 +12,7 @@ export interface Tracker {
     options: TrackerOption[];
     data: Record<number, { [date: string]: string }>;
     currentDate: number;
+    excludeFromDashboard: boolean;
 }
 
 export interface TrackerContextType {

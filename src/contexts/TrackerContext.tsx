@@ -2,7 +2,7 @@
 
 import React, {createContext, useContext} from 'react'
 import {Tracker, TrackerContextType, TrackerOption} from '@/types/tracker'
-import {useLocalStorage} from "react-use";
+import useLocalStorage from "@/hooks/useLocalStorage"
 
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined)
 
@@ -10,39 +10,57 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const [trackers, setTrackers] = useLocalStorage<Tracker[]>("trackers", [])
 
     const addTracker = (tracker: Tracker) => {
+        const localTracker: Tracker = JSON.parse(JSON.stringify(tracker))
+
         if (trackers === undefined) {
-            setTrackers([tracker])
+            setTrackers([localTracker])
         } else {
-            setTrackers([...trackers, tracker])
+            setTrackers([...trackers, localTracker])
         }
     }
 
     const updateTracker = (updatedTracker: Tracker) => {
-
+        const localTracker: Tracker = JSON.parse(JSON.stringify(updatedTracker))
 
         if (trackers !== undefined) {
-            setTrackers(trackers.map(tracker =>
-                tracker.id === updatedTracker.id ? updatedTracker : tracker
-            ))
+            setTrackers((currentTrackers) => {
+                if (currentTrackers === undefined)
+                    return currentTrackers;
+
+                const newTrackers: Tracker[] = JSON.parse(JSON.stringify((currentTrackers.map(tracker => {
+                    if (tracker.id === updatedTracker.id) {
+                        return {
+                            ...updatedTracker
+                        }
+                    }
+                    return {...tracker}
+                }))))
+
+                console.log("Setting trackers to ", newTrackers)
+
+                return [...newTrackers]
+            })
         } else {
-            console.warn("No trackers stored, could not update tracker with id {}", updatedTracker.id)
+            console.warn("No trackers stored, could not update tracker with id {}", localTracker.id)
         }
     }
 
     const switchYear = (trackerToSwitch: Tracker, year: number) => {
         if (trackers !== undefined) {
-            setTrackers(trackers.map(tracker => {
-                if (tracker.id !== trackerToSwitch.id)
-                    return tracker
+            setTrackers((currentTrackers) => {
+                return currentTrackers.map(tracker => {
+                    if (tracker.id !== trackerToSwitch.id)
+                        return tracker
 
-                const switchedTracker: Tracker = {...trackerToSwitch, currentDate: year}
+                    const switchedTracker: Tracker = {...trackerToSwitch, currentDate: year}
 
-                //ensure that the year exists
+                    //ensure that the year exists
 
-                switchedTracker.data[year] = switchedTracker.data[year] !== undefined ? switchedTracker.data[year] : {}
+                    switchedTracker.data[year] = switchedTracker.data[year] !== undefined ? switchedTracker.data[year] : {}
 
-                return switchedTracker
-            }))
+                    return switchedTracker
+                });
+            })
         } else {
             console.warn("No trackers stored, could not switch year.")
         }
@@ -50,7 +68,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const deleteTracker = (id: string) => {
         if (trackers !== undefined) {
-            setTrackers(trackers.filter(tracker => tracker.id !== id))
+            setTrackers((currentTrackers) => currentTrackers.filter(tracker => tracker.id !== id))
         } else {
             console.warn("No trackers stored, could not delete tracker with id {}", id)
         }
@@ -58,7 +76,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const unsetTrackerValue = (trackerId: string, year: number, date:string)  => {
         if (trackers !== undefined) {
-            setTrackers(trackers.map(tracker => {
+            setTrackers((currentTrackers) => currentTrackers.map(tracker => {
                 if (tracker.id === trackerId) {
                     const dataToUpdate = tracker.data[year]
 
@@ -117,7 +135,9 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     mergedTrackers[existingTrackerIndex] = {
                         ...existingTracker,
                         options: [...new Set([...existingTracker.options, ...importedTracker.options.filter(option => existingTracker.options.findIndex(o => o.label === option.label) === -1)])],
-                        data: mergedData
+                        data: mergedData,
+                        category: existingTracker.category || importedTracker.category,
+                        excludeFromDashboard: existingTracker.excludeFromDashboard || false
                     }
                 } else {
                     // Add new tracker
@@ -138,7 +158,7 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const updateTrackerOptions = (trackerId: string, updatedOptions: TrackerOption[]) => {
         if (trackers !== undefined) {
-            setTrackers(trackers.map(tracker => {
+            setTrackers(currentTrackers => currentTrackers.map(tracker => {
                 if (tracker.id === trackerId) {
                     const removedOptions = tracker.options.filter(
                         option => !updatedOptions.some(updatedOption => updatedOption.label === option.label)

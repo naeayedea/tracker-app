@@ -27,6 +27,8 @@ interface ConfirmEditDialogProps {
         removedOptions: TrackerOption[]
         changedOptions: { old: TrackerOption; new: TrackerOption }[]
         reorderedOptions?: { old: TrackerOption[], new: TrackerOption[] }
+        updatedExclusions?: TrackerOption[]
+        excludeFromDashboard?: boolean
     }
     datesAffected: { [optionLabel: string]: string[] }
 }
@@ -88,13 +90,29 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                 <ScrollArea className="flex-grow pr-4">
                     <div className="space-y-6">
                         {changes.name && (
-                            <Section title="Name Change">
+                            <Section title="Updated Name">
                                 <p>{changes.name}</p>
                             </Section>
                         )}
                         {changes.category && (
-                            <Section title="Category Change">
+                            <Section title="Updated Change">
                                 <p>{changes.category}</p>
+                            </Section>
+                        )}
+                        {changes.excludeFromDashboard !== undefined && (
+                            <Section title={"Dashboard Exclusion Rule Updated"}>
+                                <p>Rule set to {changes.excludeFromDashboard ? "true" : "false"}</p>
+                            </Section>
+                        )}
+                        {changes.updatedExclusions && (
+                            <Section title={"Statistics Exclusion Rules Updated"} >
+                                {
+                                    changes.updatedExclusions.map((option, index) => (
+                                        <li key={index}>
+                                            <span style={{ color: option.color }}> {option.label} </span> - {option.excludeFromSummary ? <span className={"text-green-400"}>true</span> : <span className={"text-red-400"}>false</span>}
+                                        </li>
+                                    ))
+                                }
                             </Section>
                         )}
                         {changes.addedOptions.length > 0 && (
