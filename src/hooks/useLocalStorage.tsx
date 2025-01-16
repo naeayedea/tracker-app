@@ -10,11 +10,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
     }, [])
 
     useEffect(() => {
-
-        console.log("New state ", storedValue)
-
         if (JSON.stringify(storedValue) !== JSON.stringify(initialValue)) {
-            console.log("updating value to ", JSON.stringify(storedValue))
             console.log(storedValue)
 
             window.localStorage.setItem(key, JSON.stringify(storedValue));
@@ -22,12 +18,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
 
     }, [storedValue]);
 
-
-    return [storedValue, (value: T | ((val: T) => T)) => {
-        console.log("setStoredValue received ", value)
-
-        setStoredValue(value)
-    }];
+    return [storedValue, setStoredValue];
 }
 
 export default useLocalStorage;

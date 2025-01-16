@@ -15,8 +15,6 @@ interface ManageExclusionsProps {
 const ManageExclusions: React.FC<ManageExclusionsProps> = ({ isOpen, onClose, options, onSave }) => {
     const [localOptions, setLocalOptions] = useState<TrackerOption[]>(options)
 
-    console.log(options)
-
     const handleToggleExclusion = (index: number) => {
         const updatedOptions = [...localOptions]
 
@@ -31,8 +29,6 @@ const ManageExclusions: React.FC<ManageExclusionsProps> = ({ isOpen, onClose, op
         onSave(localOptions)
         onClose()
     }
-
-    console.log(localOptions)
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

@@ -36,8 +36,6 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     return {...tracker}
                 }))))
 
-                console.log("Setting trackers to ", newTrackers)
-
                 return [...newTrackers]
             })
         } else {

@@ -14,9 +14,6 @@ const useFocus = (): {ref: React.RefObject<HTMLInputElement | null>, setFocus: (
     const htmlElRef: React.RefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null)
 
     const setFocus = () => {
-
-        console.log(htmlElRef)
-
         if (htmlElRef.current !== null) {
             setTimeout(() => htmlElRef.current?.focus(), 50);
         }
