@@ -96,11 +96,10 @@ const EditTracker: React.FC<EditTrackerProps> = ({ tracker, isOpen, onClose }) =
         const optionsThatStillExist = options.filter(o => !o.isDeleted)
         const originalOptionsWithoutDeletions = tracker.options.filter(o => optionsThatStillExist.findIndex(uo => uo.label === o.label) !== -1)
 
-        const nonDeletedLabels = optionsThatStillExist.map(o => o.label)
-        const originalOptionsThatStillExist = originalOptionsWithoutDeletions.map(o => o.label)
+        const originalOptionsThatStillExist = optionsThatStillExist.filter(o => originalOptionsWithoutDeletions.findIndex(uo => uo.label === o.label) !== -1).map(o => o.label)
 
-        if (JSON.stringify(nonDeletedLabels) !== JSON.stringify(originalOptionsThatStillExist)) {
-            newChanges.reorderedOptions = {old: tracker.options, new: options.filter(o => !o.isDeleted)}
+        if (JSON.stringify(tracker.options.map(o => o.label)) !== JSON.stringify(originalOptionsThatStillExist)) {
+            newChanges.reorderedOptions = {old: originalOptionsWithoutDeletions, new: options.filter(o => !o.isDeleted)}
         }
 
         if (excludeFromDashboard !== tracker.excludeFromDashboard) {
