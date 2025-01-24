@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState, useEffect, useCallback} from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker, TrackerOption } from '@/types/tracker'

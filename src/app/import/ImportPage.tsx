@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import ImportData from '@/components/ImportData'
 import PageTemplate from "@/components/PageTemplate";

@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
 import { saveAs } from 'file-saver'

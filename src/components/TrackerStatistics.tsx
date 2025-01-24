@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { Tracker } from '@/types/tracker'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

@@ -1,11 +1,8 @@
-'use client'
-
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import React, {useState, useEffect, useMemo} from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
 import {Plus, Download, Upload, LayoutDashboard} from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import {Link, useLocation} from "react-router-dom";
 
 interface TrackerMenuProps {
     isOpen: boolean;
@@ -16,7 +13,9 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
     const { trackers, getCategories } = useTracker()
     const [isClient, setIsClient] = useState(false)
     const [categories, setCategories] = useState<string[]>([])
-    const pathname = usePathname()
+    const location = useLocation()
+
+    const pathname = useMemo(() => location.pathname, [location])
 
     useEffect(() => {
         setCategories(getCategories())
@@ -47,28 +46,28 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                     </div>
                     <ul>
                         <li className="mb-2">
-                            <Link href="/"
+                            <Link to="/"
                                   className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/' ? 'bg-gray-200' : ''}`}>
                                 <Plus className="inline-block mr-2" size={18}/>
                                 Create New Tracker
                             </Link>
                         </li>
                         <li className="mb-2">
-                            <Link href="/dashboard"
+                            <Link to="/dashboard"
                                   className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/dashboard' ? 'bg-gray-200' : ''}`}>
                                 <LayoutDashboard className="inline-block mr-2" size={18}/>
                                 Dashboard
                             </Link>
                         </li>
                         <li className="mb-2">
-                            <Link href="/export"
+                            <Link to="/export"
                                   className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/export' ? 'bg-gray-200' : ''}`}>
                                 <Download className="inline-block mr-2" size={18}/>
                                 Export Data
                             </Link>
                         </li>
                         <li className="mb-2">
-                            <Link href="/import"
+                            <Link to="/import"
                                   className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === '/import' ? 'bg-gray-200' : ''}`}>
                                 <Upload className="inline-block mr-2" size={18}/>
                                 Import Data
@@ -89,7 +88,7 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                                             {groupedTrackers[category].map((tracker) => (
                                                 <li key={tracker.id} className="mb-2">
                                                     <Link
-                                                        href={`/tracker/${tracker.id}`}
+                                                        to={`/tracker/${tracker.id}`}
                                                         className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === `/tracker/${tracker.id}` ? 'bg-gray-200' : ''}`}
                                                     >
                                                         {tracker.name}
@@ -106,7 +105,7 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                                 {uncategorizedTrackers.map((tracker) => (
                                     <li key={tracker.id} className="mb-2">
                                         <Link
-                                            href={`/tracker/${tracker.id}`}
+                                            to={`/tracker/${tracker.id}`}
                                             className={`block w-full text-left p-2 hover:bg-gray-100 rounded ${pathname === `/tracker/${tracker.id}` ? 'bg-gray-200' : ''}`}
                                         >
                                             {tracker.name}

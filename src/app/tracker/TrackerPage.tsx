@@ -1,23 +1,21 @@
-'use client'
-
 import React, {useEffect, useState} from 'react'
-import { useRouter } from 'next/navigation'
 import { useTracker } from '@/contexts/TrackerContext'
 import TrackerCalendar from '@/components/TrackerCalendar'
 import TrackerStatistics from '@/components/TrackerStatistics'
 import ConfirmDialog from '@/components/ConfirmDialog'
-import { useParams } from 'next/navigation'
 import PageTemplate from "@/components/PageTemplate";
 import {Button} from "@/components/ui/button";
 import EditTracker from "@/components/EditTracker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {useNavigate, useParams} from "react-router-dom";
 
 export default function TrackerPage() {
     const [isClient, setIsClient] = useState(false);
     const { trackers, deleteTracker } = useTracker()
-    const router = useRouter()
-    const params = useParams()
-    const trackerId = params.id as string
+    const navigate = useNavigate()
+    const { trackerId } = useParams()
+
+    console.log(trackerId)
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -57,7 +55,7 @@ export default function TrackerPage() {
     const handleDeleteConfirm = () => {
         deleteTracker(tracker.id)
         setIsDeleteDialogOpen(false)
-        router.push('/')
+        navigate("/")
     }
 
     const handleDeleteCancel = () => {

@@ -1,0 +1,15 @@
+{
+  "short_name": "Tracker Tracking",
+  "name": "Tracker Tracking",
+  "icons": [
+    {
+      "src": "images/globe.svg",
+      "purpose": "maskable any",
+      "sizes": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#8d96b0",
+  "background_color": "#1d2029"
+}

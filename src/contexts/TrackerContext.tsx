@@ -1,5 +1,3 @@
-'use client'
-
 import React, {createContext, useContext} from 'react'
 import {Tracker, TrackerContextType, TrackerOption} from '@/types/tracker'
 import useLocalStorage from "@/hooks/useLocalStorage"

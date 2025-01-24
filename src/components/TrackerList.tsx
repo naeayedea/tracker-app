@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import { useTracker } from '@/contexts/TrackerContext';
 import TrackerCalendar from '@/components/TrackerCalendar';

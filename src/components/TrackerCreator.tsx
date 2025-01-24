@@ -1,7 +1,4 @@
-'use client'
-
 import React, { useState, useEffect, KeyboardEvent } from 'react'
-import { useRouter } from 'next/navigation'
 import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker, TrackerOption } from '@/types/tracker'
 import { hashStringToColor, getContrastColor, isColorValid } from '@/utils/colorUtils'
@@ -9,10 +6,11 @@ import { X, Plus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import CategoryInput from "@/components/CategoryInput";
+import {useNavigate} from "react-router-dom";
 
 const TrackerCreator: React.FC = () => {
     const { addTracker, getCategories } = useTracker()
-    const router = useRouter()
+    const navigate = useNavigate()
     const [name, setName] = useState('')
     const [category, setCategory] = useState('')
     const [options, setOptions] = useState<TrackerOption[]>([])
@@ -62,7 +60,7 @@ const TrackerCreator: React.FC = () => {
             }
 
             addTracker(newTracker)
-            router.push(`/tracker/${newTracker.id}`)
+            navigate(`/tracker/${newTracker.id}`)
         }
     }
 

@@ -1,7 +1,7 @@
 import TrackerCreator from '@/components/TrackerCreator'
 import PageTemplate from "@/components/PageTemplate";
 
-export default function Home() {
+export default function CreateTrackerPage() {
     return (
         <PageTemplate>
             <TrackerCreator />
