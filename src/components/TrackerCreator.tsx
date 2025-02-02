@@ -79,7 +79,7 @@ const TrackerCreator: React.FC = () => {
     }
 
     return (
-        <div className="bg-white shadow-lg rounded-xl p-8 mb-8 min-h-full">
+        <div className="bg-white shadow-lg rounded-xl p-8 mb-8 min-h-full w-full xl:w-5/6 xl:mx-auto ">
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Create New Tracker</h2>
             <div>
                 <Label htmlFor="tracker-name">Tracker Name</Label>
@@ -89,15 +89,15 @@ const TrackerCreator: React.FC = () => {
                     onChange={(e) => setName(e.target.value)}
                     onKeyUp={handleKeyPress}
                     placeholder="Enter tracker name"
-                    className={"w-full lg:w-1/2 my-2"}
+                    className={"w-full lg:w-5/6 my-2"}
                 />
             </div>
             <div>
-                <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} className={"w-full lg:w-1/2"} />
+                <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} className={"w-full lg:w-2/3"}/>
             </div>
-            <div>
+            <div className={"w-full lg:w-1/2"}>
                 <Label htmlFor="option-label">Add Option</Label>
-                <div className="flex space-x-2 w-full lg:w-1/2">
+                <div className="flex space-x-2">
                     <div className={"flex flex-col align-middle justify-center content-center flex-grow "}>
                         <Input
                             id="option-label"
