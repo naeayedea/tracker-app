@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
-import { useTracker } from '@/contexts/TrackerContext'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { TimePeriod, filterDataByTimePeriod, getTimePeriodLabel } from '@/utils/dateUtils'
+import React, {useState} from 'react'
+import {useTracker} from '@/contexts/TrackerContext'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    Legend,
+    Pie,
+    PieChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from 'recharts'
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {filterDataByTimePeriod, getTimePeriodLabel, TimePeriod} from '@/utils/dateUtils'
 import PageTemplate from "@/components/PageTemplate";
 import {Tracker, TrackerOption} from "@/types/tracker";
 import {flattenTrackerData} from "@/utils/trackerUtils";
@@ -25,9 +37,9 @@ export default function DashboardPage() {
         const totalEntries = Object.keys(filteredData).length
         const possibleEntries = timePeriod === 'today' ? 1 :
             timePeriod === 'week' ? 7 :
-                timePeriod === 'month' ? 30 :
-                    timePeriod === 'year' ? (new Date(new Date().getFullYear(),1,29).getMonth()==1?366:365) :
-                        Object.keys(tracker.data).reduce((sum, year) => sum + Object.keys(tracker.data[parseInt(year)]).length, 0)
+                timePeriod === 'month' ? 28 :
+                    timePeriod === 'year' ? 365:
+                        calculateAllTimePossibleEntries(tracker)
 
         const includedLabels: string[] = Object.values(filteredData).filter(option => {
             const foundOption: TrackerOption | undefined = tracker.options.find(o => o.label === option)
@@ -35,17 +47,11 @@ export default function DashboardPage() {
             return foundOption !== undefined && !foundOption.excludeFromSummary
         })
 
-
-
         return {
             id: tracker.id,
             name: tracker.name,
             data: filteredData,
             completionRate: (totalEntries / possibleEntries) * 100,
-            // mostCommonEntry: Object.entries(tracker.data.filter(option => !option.excludeFromSummary).reduce((acc, option) => {
-            //     acc[option.label] = acc[option.label] + 1
-            //     return acc
-            // }, {} as Record<string, number>)).reduce((a, b) => a[1] > b[1] ? a : b)[0]
             mostCommonEntry: includedLabels.sort((a,b) => includedLabels.filter(v => v===a).length - includedLabels.filter(v => v===b).length).pop()
         }
     })
@@ -69,9 +75,9 @@ export default function DashboardPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Time</SelectItem>
-                            <SelectItem value="year">This Year</SelectItem>
-                            <SelectItem value="month">This Month</SelectItem>
-                            <SelectItem value="week">This Week</SelectItem>
+                            <SelectItem value="year">Last 365 Days</SelectItem>
+                            <SelectItem value="month">Last 28 Days</SelectItem>
+                            <SelectItem value="week">Last 7 Days</SelectItem>
                             <SelectItem value="today">Today</SelectItem>
                         </SelectContent>
                     </Select>
@@ -163,3 +169,11 @@ export default function DashboardPage() {
     )
 }
 
+const calculateAllTimePossibleEntries = (tracker: Tracker): number => {
+    const availableYears = Object.keys(tracker.data).filter(year => Object.keys(tracker.data[parseInt(year)]).length > 0)
+    const earliestYear = availableYears.reduce((val, next) => val < next ? val : next)
+    const earliestYearData = tracker.data[parseInt(earliestYear)]
+    const earliestEntryInEarliestYear = Object.keys(earliestYearData).reduce((val, next) => val < next ? val : next)
+
+    return Math.ceil(Math.abs(new Date().getTime() - new Date(earliestEntryInEarliestYear).getTime()) / (1000 * 60 * 60 * 24));
+}
