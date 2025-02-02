@@ -18,7 +18,7 @@ export default function PageTemplate({ children }: { children: React.ReactNode})
     }
 
     return (
-        <div className="flex flex-col min-h-screen max-h-svh h-svh">
+        <div className="flex flex-col max-h-svh h-svh">
             <Header toggleSideMenu={toggleSideMenu} isSideMenuOpen={isSideMenuOpen}/>
             <div className="flex flex-1 overflow-hidden h-svh max-h-svh">
                 {isClient && <TrackerMenu isOpen={isSideMenuOpen || width > 1024} setIsOpen={setIsSideMenuOpen}/>}
