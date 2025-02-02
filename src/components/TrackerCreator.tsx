@@ -89,16 +89,16 @@ const TrackerCreator: React.FC = () => {
                     onChange={(e) => setName(e.target.value)}
                     onKeyUp={handleKeyPress}
                     placeholder="Enter tracker name"
-                    className={"w-full my-2"}
+                    className={"w-full lg:w-1/2 my-2"}
                 />
             </div>
             <div>
-                <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} />
+                <CategoryInput category={category} setCategory={setCategory} categories={categories} setCategories={setCategories} className={"w-full lg:w-1/2"} />
             </div>
             <div>
                 <Label htmlFor="option-label">Add Option</Label>
-                <div className="flex space-x-2 ">
-                    <div className={"flex flex-col align-middle justify-center content-center flex-grow"}>
+                <div className="flex space-x-2 w-full lg:w-1/2">
+                    <div className={"flex flex-col align-middle justify-center content-center flex-grow "}>
                         <Input
                             id="option-label"
                             value={optionLabel}
@@ -162,7 +162,7 @@ const TrackerCreator: React.FC = () => {
             <button
                 onClick={handleCreateTracker}
                 disabled={!name || options.length === 0}
-                className="w-full bg-green-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full lg:w-1/2 bg-green-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
                 Create Tracker
             </button>

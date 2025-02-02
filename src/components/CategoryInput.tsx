@@ -8,6 +8,7 @@ interface CategoryInputProps {
     setCategory: (str: string) => void;
     categories: string[];
     setCategories: (strings: string[]) => void;
+    className?: string;
 }
 
 const useFocus = (): {ref: React.RefObject<HTMLInputElement | null>, setFocus: () => void} => {
@@ -22,7 +23,7 @@ const useFocus = (): {ref: React.RefObject<HTMLInputElement | null>, setFocus: (
     return { ref: htmlElRef, setFocus: setFocus }
 }
 
-const CategoryInput: React.FC<CategoryInputProps> = ({category, setCategory, categories, setCategories}) => {
+const CategoryInput: React.FC<CategoryInputProps> = ({category, setCategory, categories, setCategories, className}) => {
     const [categoryTextInput, setCategoryTextInput] = useState<string>("");
     const {ref, setFocus} = useFocus()
 
@@ -44,7 +45,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({category, setCategory, cat
     }
 
     return (
-        <div>
+        <div className={className}>
             <Label htmlFor="edit-category">Category</Label>
             <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger id="edit-category">
