@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import { useTracker } from '@/contexts/TrackerContext'
 import { Tracker } from '@/types/tracker'
 import ConfirmImportDialog from './ConfirmImportDialog'
+import {HeadingTwo} from "@/components/ui/text";
+import {Button} from "@/components/ui/button";
+import {FileInput} from "@/components/ui/input";
 
 const ImportData: React.FC = () => {
     const { importTrackers } = useTracker()
@@ -47,28 +50,24 @@ const ImportData: React.FC = () => {
     }
 
     return (
-        <div className="bg-white shadow-lg rounded-xl p-8 mx-auto min-w-full">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Import Data</h2>
+        <div className="bg-white shadow-lg rounded-xl p-8 mb-8 min-h-full w-full xl:w-5/6 xl:mx-auto ">
+            <HeadingTwo className="font-semibold mb-6">Import Data</HeadingTwo>
             <div className="mb-4">
-                <input
+                <FileInput
                     type="file"
                     accept=".json"
                     onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-full file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-blue-50 file:text-blue-700
-                        hover:file:bg-blue-100"
+                    className={"block w-full text-sm"}
+                    buttonClassName={"px-7"}
                 />
             </div>
-            <button
+            <Button
                 onClick={handleImport}
                 disabled={!file}
-                className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className=""
             >
                 Preview Import
-            </button>
+            </Button>
             {error && <p className="mt-4 text-red-500">{error}</p>}
 
             <ConfirmImportDialog
