@@ -31,12 +31,15 @@ const ConfirmImportDialog: React.FC<ConfirmImportDialogProps> = ({
                 </DialogHeader>
                 <ScrollArea className="flex-grow pr-4">
                     <Accordion type="single" collapsible className="w-full">
-                        {importData.map((tracker, index) => (
-                            <AccordionItem value={`tracker-${index}`} key={index}>
+                        {importData.map(function (tracker, index) {
+
+                            const importedTrackerData = Object.entries(tracker.data).filter(([, yearData]) => yearData && Object.keys(yearData).length > 0 )
+
+                            return <AccordionItem value={`tracker-${index}`} key={index}>
                                 <AccordionTrigger>
                                     <span className="font-semibold">{tracker.name}</span>
                                     <span className="text-sm text-gray-500 ml-2">
-                                        ({tracker.options.length} options, {Object.keys(tracker.data).length} years)
+                                        ({tracker.options.length} options{importedTrackerData.length > 0 && `, ${importedTrackerData.length} years`})
                                     </span>
                                 </AccordionTrigger>
                                 <AccordionContent>
@@ -47,29 +50,31 @@ const ConfirmImportDialog: React.FC<ConfirmImportDialogProps> = ({
                                                 <li key={optionIndex}>{option.label}</li>
                                             ))}
                                         </ul>
-                                        <h4 className="font-semibold mb-2">Years:</h4>
-                                        <Accordion type="single" collapsible className="w-full">
-                                            {Object.entries(tracker.data).map(([year, yearData], yearIndex) => (
-                                                <AccordionItem value={`year-${year}`} key={yearIndex}>
-                                                    <AccordionTrigger>{year}</AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <ScrollArea className="h-40 pr-4">
-                                                            <ul className="list-disc pl-5">
-                                                                {Object.entries(yearData).map(([date, value], entryIndex) => (
-                                                                    <li key={entryIndex}>
-                                                                        {date}: {value}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        </ScrollArea>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            ))}
-                                        </Accordion>
+                                        {importedTrackerData.length > 0 && <>
+                                            <h4 className="font-semibold mb-2">Years:</h4>
+                                            <Accordion type="multiple" className="w-full">
+                                                {importedTrackerData.map(([year, yearData], yearIndex) => (
+                                                    <AccordionItem value={`year-${year}`} key={yearIndex}>
+                                                        <AccordionTrigger>{year}</AccordionTrigger>
+                                                        <AccordionContent>
+                                                            <ScrollArea className="h-40 pr-4">
+                                                                <ul className="list-disc pl-5">
+                                                                    {Object.entries(yearData).map(([date, value], entryIndex) => (
+                                                                        <li key={entryIndex}>
+                                                                            {date}: {value}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </ScrollArea>
+                                                        </AccordionContent>
+                                                    </AccordionItem>
+                                                ))}
+                                            </Accordion>
+                                        </>}
                                     </div>
                                 </AccordionContent>
-                            </AccordionItem>
-                        ))}
+                            </AccordionItem>;
+                        })}
                     </Accordion>
                 </ScrollArea>
                 <DialogFooter className="mt-4">

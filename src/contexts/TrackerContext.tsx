@@ -45,13 +45,23 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (trackers !== undefined) {
             setTrackers((currentTrackers) => {
                 return currentTrackers.map(tracker => {
+                    const previousYear = tracker.currentDate
+
+                    if (year === previousYear) {
+                        return tracker
+                    }
+
                     if (tracker.id !== trackerToSwitch.id)
                         return tracker
 
                     const switchedTracker: Tracker = {...trackerToSwitch, currentDate: year}
 
-                    //ensure that the year exists
+                    //if the previous year is empty then wipe it to avoid data expansion when the user is only looking through the calendar.
+                    if (switchedTracker.data[previousYear] && Object.keys(switchedTracker.data[previousYear]).length <= 0) {
+                        delete switchedTracker.data[previousYear];
+                    }
 
+                    //ensure that the year exists
                     switchedTracker.data[year] = switchedTracker.data[year] !== undefined ? switchedTracker.data[year] : {}
 
                     return switchedTracker
@@ -123,9 +133,12 @@ export const TrackerProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     const existingTracker = mergedTrackers[existingTrackerIndex]
                     const mergedData = { ...existingTracker.data }
                     Object.keys(importedTracker.data).map((year: string) => parseInt(year)).forEach((year: number) => {
-                        mergedData[year] = {
-                            ...(mergedData[year] || {}),
-                            ...importedTracker.data[year]
+                        //if a particular year contains data then we'll merge it, otherwise don't bother.
+                        if (importedTracker.data[year] && Object.keys(importedTracker.data[year]).length > 0) {
+                            mergedData[year] = {
+                                ...(mergedData[year] || {}),
+                                ...importedTracker.data[year]
+                            }
                         }
                     })
                     mergedTrackers[existingTrackerIndex] = {
