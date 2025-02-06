@@ -15,8 +15,6 @@ export default function TrackerPage() {
     const navigate = useNavigate()
     const { trackerId } = useParams()
 
-    console.log(trackerId)
-
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
