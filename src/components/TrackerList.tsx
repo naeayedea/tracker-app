@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTracker } from '@/contexts/TrackerContext';
 import TrackerCalendar from '@/components/TrackerCalendar';
+import {HeadingTwo} from "@/components/ui/text";
+import {Button} from "@/components/ui/button";
 
 interface TrackerListProps {
     selectedTrackerId: string | null;
@@ -17,13 +19,13 @@ const TrackerList: React.FC<TrackerListProps> = ({ selectedTrackerId }) => {
         <div className="space-y-4">
             {displayedTrackers.map(tracker => (
                 <div key={tracker.id} className="border p-4 rounded-lg">
-                    <h2 className="text-2xl font-bold mb-2">{tracker.name}</h2>
-                    <button
+                    <HeadingTwo>{tracker.name}</HeadingTwo>
+                    <Button
                         onClick={() => deleteTracker(tracker.id)}
                         className="bg-red-500 text-white px-2 py-1 rounded mb-2"
                     >
                         Delete Tracker
-                    </button>
+                    </Button>
                     <TrackerCalendar tracker={tracker} />
                 </div>
             ))}

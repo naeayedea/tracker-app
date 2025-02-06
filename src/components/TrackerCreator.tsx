@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import CategoryInput from "@/components/CategoryInput";
 import {useNavigate} from "react-router-dom";
+import {HeadingThree, HeadingTwo} from "@/components/ui/text";
 
 const TrackerCreator: React.FC = () => {
     const { addTracker, getCategories } = useTracker()
@@ -80,7 +81,7 @@ const TrackerCreator: React.FC = () => {
 
     return (
         <div className="bg-white shadow-lg rounded-xl p-8 mb-8 min-h-full w-full xl:w-5/6 xl:mx-auto ">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Create New Tracker</h2>
+            <HeadingTwo>Create New Tracker</HeadingTwo>
             <div>
                 <Label htmlFor="tracker-name">Tracker Name</Label>
                 <Input
@@ -140,7 +141,7 @@ const TrackerCreator: React.FC = () => {
                 </div>
                 </div>
                 <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-3 text-gray-700">Options</h3>
+                    <HeadingThree className="mb-3">Options</HeadingThree>
                 <div className="flex flex-wrap gap-3">
                     {options.map((option, index) => (
                         <span

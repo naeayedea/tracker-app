@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { TrackerOption } from '@/types/tracker'
+import {HeadingFive, HeadingFour} from "@/components/ui/text";
 
 const groupDatesByYear = (dates: string[]): Record<string, string[]> => {
     return dates.reduce((acc, date) => {
@@ -152,8 +153,7 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                         )}
                         {changes.reorderedOptions && (
                             <Section title="Reordered Options">
-                                <h5 className="font-medium my-2">{"Old"}</h5>
-
+                                <HeadingFive className="mt-2">{"Old"}</HeadingFive>
                                 {changes.reorderedOptions.old.map((option) => (
                                     <div key={option.label}
                                          className="flex items-center space-x-2 border rounded-md p-2"
@@ -174,9 +174,7 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                                         </span>
                                     </div>
                                 ))}
-
-                                <h5 className="font-medium my-2">{"New"}</h5>
-
+                                <HeadingFive className="mt-2">{"New"}</HeadingFive>
                                 {changes.reorderedOptions.new.map((option) => (
                                     <div key={option.label}
                                          className="flex items-center space-x-2 border rounded-md p-2"
@@ -205,7 +203,7 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
                                     // If there's only one option, don't use an accordion
                                     Object.entries(datesAffected).map(([optionLabel, dates], index) => (
                                         <div key={index}>
-                                            <h5 className="font-medium mb-2">{optionLabel}</h5>
+                                            <HeadingFive>{optionLabel}</HeadingFive>
                                             <ScrollArea className="h-[200px] w-full rounded-md border p-4">
                                                 {renderDates(dates)}
                                             </ScrollArea>
@@ -245,7 +243,7 @@ const ConfirmEditDialog: React.FC<ConfirmEditDialogProps> = ({
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
     <div className="bg-gray-50 p-4 rounded-lg">
-        <h4 className="font-semibold text-lg mb-2">{title}</h4>
+        <HeadingFour>{title}</HeadingFour>
         {children}
     </div>
 )

@@ -15,6 +15,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { TimePeriod, filterDataByTimePeriod, getTimePeriodLabel } from '@/utils/dateUtils'
 import {flattenTrackerData} from "@/utils/trackerUtils";
+import {HeadingTwo} from "@/components/ui/text";
 
 interface TrackerStatisticsProps {
     tracker: Tracker
@@ -52,7 +53,7 @@ const TrackerStatistics: React.FC<TrackerStatisticsProps> = ({ tracker }) => {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Statistics for {tracker.name}</h2>
+                <HeadingTwo>Statistics for {tracker.name}</HeadingTwo>
                 <Select value={timePeriod} onValueChange={(value: TimePeriod) => setTimePeriod(value)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select time period" />

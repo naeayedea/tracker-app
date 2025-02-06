@@ -3,6 +3,7 @@ import { useTracker } from '@/contexts/TrackerContext'
 import {Plus, Download, Upload, LayoutDashboard} from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import {Link, useLocation} from "react-router-dom";
+import {HeadingTwo} from "@/components/ui/text";
 
 interface TrackerMenuProps {
     isOpen: boolean;
@@ -42,7 +43,7 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
             >
                 <div className="p-4">
                     <div className="flex items-center mb-4">
-                        <h2 className="text-xl font-bold">Navigation</h2>
+                        <HeadingTwo className={"mb-0"}>Navigation</HeadingTwo>
                     </div>
                     <ul>
                         <li className="mb-2">
@@ -76,7 +77,7 @@ const TrackerMenu: React.FC<TrackerMenuProps> = ({ isOpen, setIsOpen })  => {
                     </ul>
 
                     <div className="flex items-center my-4">
-                        <h2 className="text-xl font-bold">Trackers</h2>
+                        <HeadingTwo className={"my-0"}>Trackers</HeadingTwo>
                     </div>
                     {isClient && <>
                         {categories.map((category) => (

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tracker } from '@/types/tracker'
+import {HeadingThree} from "@/components/ui/text";
 
 interface TrackerKeyProps {
     tracker: Tracker
@@ -8,7 +9,7 @@ interface TrackerKeyProps {
 const TrackerKey: React.FC<TrackerKeyProps> = ({ tracker }) => {
     return (
         <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-2">Tracker Key</h3>
+            <HeadingThree>Tracker Key</HeadingThree>
             <div className="grid grid-cols-2 gap-2">
                 {tracker.options.map((option) => (
                     <div key={option.label} className="flex items-center">

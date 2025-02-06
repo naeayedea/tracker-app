@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tracker } from '@/types/tracker';
+import {HeadingThree} from "@/components/ui/text";
 
 interface TrackerInputProps {
     tracker: Tracker;
@@ -20,9 +21,9 @@ const TrackerInput: React.FC<TrackerInputProps> = ({ tracker, date, currentValue
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-4 rounded-lg max-w-md w-full">
-                <h3 className="text-lg font-bold mb-4">
+                <HeadingThree className="mb-4">
                     {tracker.name} - {date.toLocaleDateString()}
-                </h3>
+                </HeadingThree>
                 <div className="space-y-2">
                     {tracker.options.map((option) => (
                         <button

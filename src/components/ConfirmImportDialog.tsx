@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Tracker } from '@/types/tracker'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {HeadingFour} from "@/components/ui/text";
 
 interface ConfirmImportDialogProps {
     isOpen: boolean
@@ -44,14 +45,14 @@ const ConfirmImportDialog: React.FC<ConfirmImportDialogProps> = ({
                                 </AccordionTrigger>
                                 <AccordionContent>
                                     <div className="pl-4">
-                                        <h4 className="font-semibold mb-2">Options:</h4>
+                                        <HeadingFour>Options:</HeadingFour>
                                         <ul className="list-disc pl-5 mb-4">
                                             {tracker.options.map((option, optionIndex) => (
                                                 <li key={optionIndex}>{option.label}</li>
                                             ))}
                                         </ul>
                                         {importedTrackerData.length > 0 && <>
-                                            <h4 className="font-semibold mb-2">Years:</h4>
+                                            <HeadingFour>Years:</HeadingFour>
                                             <Accordion type="multiple" className="w-full">
                                                 {importedTrackerData.map(([year, yearData], yearIndex) => (
                                                     <AccordionItem value={`year-${year}`} key={yearIndex}>

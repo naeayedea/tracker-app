@@ -5,6 +5,7 @@ import TrackerInput from '@/components/TrackerInput';
 import TrackerKey from '@/components/TrackerKey';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {Button} from "@/components/ui/button";
+import {HeadingThree} from "@/components/ui/text";
 
 interface TrackerCalendarProps {
     tracker: Tracker;
@@ -88,7 +89,7 @@ const TrackerCalendar: React.FC<TrackerCalendarProps> = ({ tracker }) => {
 
             calendar.push(
                 <div key={`${year}-${month}`} className="m-4">
-                    <h3 className="font-bold mb-2">{new Date(year, month).toLocaleString('default', {month: 'long'})}</h3>
+                    <HeadingThree>{new Date(year, month).toLocaleString('default', {month: 'long'})}</HeadingThree>
                     <div className="grid justify-items-end grid-cols-7 gap-x-4 mb-0">{dayIndicator}</div>
                     <div className="grid justify-items-end grid-cols-7 gap-4">{monthDays}</div>
                 </div>
